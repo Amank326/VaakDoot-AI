@@ -2058,25 +2058,49 @@ async function sendMsg(){
 async function callGemini(txt){
   S.hist.push({role:'user',parts:[{text:txt}]});
   const recent=S.hist.slice(-20);
-  const r=await fetch(GM_URL,{
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body:JSON.stringify({
-      system_instruction:{parts:[{text:SYS}]},
-      contents:recent,
-      generationConfig:{temperature:.7,maxOutputTokens:1024,topP:.9}
-    })
-  });
-  if(!r.ok){
-    const e=await r.json().catch(()=>({}));
-    const errMsg=e.error?.message||e.message||`HTTP ${r.status}`;
-    const fullErr=`${errMsg}\n\n💡 DEBUG: Verify Gemini API in Google Cloud:\n✓ Enable "Generative Language API"\n✓ Setup billing (free tier has limits)\n✓ Create API key with permissions`;
-    throw new Error(fullErr);
+
+  // Try server-side proxy first (keeps API key secret). If proxy fails, fallback to direct client call.
+  const payload = {
+    system_instruction:{parts:[{text:SYS}]},
+    contents:recent,
+    generationConfig:{temperature:.7,maxOutputTokens:1024,topP:.9}
+  };
+
+  // Helper to parse Google response shape
+  const parseResp = d => d.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.';
+
+  // Attempt proxy
+  try{
+    const rproxy = await fetch('/api/gemini',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if(rproxy.ok){
+      const dp = await rproxy.json().catch(()=>({}));
+      const rep = parseResp(dp);
+      S.hist.push({role:'model',parts:[{text:rep}]});
+      return rep;
+    }
+  }catch(e){
+    // ignore and fallback
   }
-  const d=await r.json();
-  const rep=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, I could not generate a response.';
-  S.hist.push({role:'model',parts:[{text:rep}]});
-  return rep;
+
+  // Fallback: client-side direct call (requires API key in localStorage or GK)
+  try{
+    const r=await fetch(GM_URL,{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(!r.ok){
+      const e=await r.json().catch(()=>({}));
+      const errMsg=e.error?.message||e.message||`HTTP ${r.status}`;
+      throw new Error(errMsg+"\n\nTip: Use the settings ⚙️ to add a server-side proxy or a valid API key.");
+    }
+    const d=await r.json();
+    const rep=parseResp(d);
+    S.hist.push({role:'model',parts:[{text:rep}]});
+    return rep;
+  }catch(err){
+    throw err;
+  }
 }
 function sp(q){document.getElementById('chatIn').value=q;sendMsg();}
 function addMsg(role,txt){
