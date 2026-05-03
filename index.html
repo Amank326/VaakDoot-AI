@@ -1417,6 +1417,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     </div>
     <div class="loc-row">
       <button class="btn-glow secondary" style="padding:10px 20px;font-size:13px;" onclick="myLoc()">📍 Use My Location</button>
+      <input id="mapsKeyIn" type="password" placeholder="Paste Google Maps API Key" aria-label="Google Maps API key" style="min-width:260px;flex:1;background:var(--glass);border:1px solid var(--glass-border);border-radius:var(--r16);padding:10px 14px;color:var(--text1);outline:none;"/>
+      <button class="btn-glow secondary" style="padding:10px 20px;font-size:13px;" onclick="saveMapsKey()">🔐 Save Map Key</button>
       <select id="stSel" aria-label="Select state" onchange="updSt()">
         <option value="">Select State</option>
         <option value="Chhattisgarh">Chhattisgarh</option>
@@ -1493,7 +1495,6 @@ window.initMap=function(){
   document.getElementById('mph').style.display='none';
 };
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY&callback=initMap"></script>
 
 <script>
 /* ═══════════════════════════════════════
@@ -1968,6 +1969,49 @@ function togV(){
 }
 
 // ── BOOTH FINDER ──
+const MAP_KEY_STORE='vaakdoot_maps_key';
+
+function getMapsKey(){
+  try{return localStorage.getItem(MAP_KEY_STORE)||'';}catch{return '';}
+}
+
+function setMapPlaceholder(msg){
+  const ph=document.getElementById('mph');
+  if(!ph)return;
+  const p=ph.querySelector('p');
+  if(p&&msg)p.textContent=msg;
+  ph.style.display='flex';
+}
+
+function loadGoogleMapsApi(key){
+  if(!key){
+    setMapPlaceholder('Add your Google Maps API key and click Save Map Key to enable map search.');
+    return;
+  }
+  if(window.google&&window.google.maps){
+    if(!window.GM)window.initMap();
+    return;
+  }
+  const old=document.getElementById('gmapsScript');
+  if(old)old.remove();
+  const s=document.createElement('script');
+  s.id='gmapsScript';
+  s.async=true;
+  s.defer=true;
+  s.src=`https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places&callback=initMap`;
+  s.onerror=()=>setMapPlaceholder('Map could not load. Check API key, billing, and Places API in Google Cloud console.');
+  document.head.appendChild(s);
+}
+
+function saveMapsKey(){
+  const el=document.getElementById('mapsKeyIn');
+  const key=(el?.value||'').trim();
+  if(!key){alert('Please enter a valid Google Maps API key.');return;}
+  try{localStorage.setItem(MAP_KEY_STORE,key);}catch{}
+  loadGoogleMapsApi(key);
+  alert('Map key saved. Google Maps is loading...');
+}
+
 function srchBooth(){
   const loc=document.getElementById('locIn').value.trim();
   if(!loc){alert('Please enter a location.');return;}
@@ -1978,13 +2022,34 @@ function srchBooth(){
         window.GM.setCenter(results[0].geometry.location);
         window.GM.setZoom(13);
         new google.maps.Marker({map:window.GM,position:results[0].geometry.location,title:'Your Location'});
-        [[.003,.005],[-.004,.002],[.001,-.006]].forEach((off,i)=>{
-          new google.maps.Marker({map:window.GM,position:{lat:results[0].geometry.location.lat()+off[0],lng:results[0].geometry.location.lng()+off[1]},label:{text:''+(i+1),color:'white',fontWeight:'bold'},title:`Polling Booth ${i+1}`});
-        });
+        if(google.maps.places&&google.maps.places.PlacesService){
+          const ps=new google.maps.places.PlacesService(window.GM);
+          ps.nearbySearch({
+            location:results[0].geometry.location,
+            radius:3000,
+            keyword:'polling station OR school OR government building'
+          },(res,pstatus)=>{
+            if(pstatus===google.maps.places.PlacesServiceStatus.OK&&res){
+              res.slice(0,5).forEach((place,i)=>{
+                new google.maps.Marker({
+                  map:window.GM,
+                  position:place.geometry.location,
+                  label:{text:''+(i+1),color:'white',fontWeight:'bold'},
+                  title:place.name||`Polling Booth ${i+1}`
+                });
+              });
+            }
+          });
+        }else{
+          [[.003,.005],[-.004,.002],[.001,-.006]].forEach((off,i)=>{
+            new google.maps.Marker({map:window.GM,position:{lat:results[0].geometry.location.lat()+off[0],lng:results[0].geometry.location.lng()+off[1]},label:{text:''+(i+1),color:'white',fontWeight:'bold'},title:`Polling Booth ${i+1}`});
+          });
+        }
       }else alert('Location not found. Try a more specific area.');
     });
   }else{
-    document.getElementById('bInfo').innerHTML=`<h3>📍 ${loc}</h3><p style="margin:12px 0;color:var(--text2)">To find your exact polling booth:</p><ol><li>Visit <a href="https://voters.eci.gov.in/booth-search" target="_blank" style="color:var(--saffron)">voters.eci.gov.in/booth-search</a></li><li>Enter your EPIC card number</li><li>Your booth details will be shown</li></ol><a href="https://voters.eci.gov.in" target="_blank" class="btn-glow primary" style="display:inline-flex;margin-top:16px;text-decoration:none;padding:12px 24px;">🔍 Open ECI Portal →</a>`;
+    setMapPlaceholder('Map is not active yet. Save Google Maps key first, then search again.');
+    document.getElementById('bInfo').innerHTML=`<h3>📍 ${loc}</h3><p style="margin:12px 0;color:var(--text2)">To find your exact polling booth:</p><ol><li>Save Maps API key using the field above</li><li>Or visit <a href="https://voters.eci.gov.in/booth-search" target="_blank" style="color:var(--saffron)">voters.eci.gov.in/booth-search</a></li><li>Enter your EPIC card number</li><li>Your booth details will be shown</li></ol><a href="https://voters.eci.gov.in" target="_blank" class="btn-glow primary" style="display:inline-flex;margin-top:16px;text-decoration:none;padding:12px 24px;">🔍 Open ECI Portal →</a>`;
   }
 }
 function myLoc(){
@@ -2030,6 +2095,8 @@ document.querySelectorAll('[tabindex="0"]').forEach(el=>{
 
 // Init
 bldTL();
+document.getElementById('mapsKeyIn').value=getMapsKey();
+loadGoogleMapsApi(getMapsKey());
 </script>
 </body>
 </html>
