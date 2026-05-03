@@ -4,6 +4,7 @@
     "ignore": [
       "firebase.json",
       "**/node_modules/**",
+      "files/**",
       "vaakdoot-ai-final/**",
       "vaakdoot-ai-final.zip",
       "server.py",
