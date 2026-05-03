@@ -1,0 +1,2035 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VaakDoot AI — Election Intelligence Platform</title>
+<meta name="description" content="India's most advanced AI election education platform. 3D interactive, voice-enabled, bilingual."/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Outfit:wght@300;400;500;600;700&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════
+   VAAKDOOT AI — CINEMATIC 3D DESIGN SYSTEM
+   World-Level Hackathon Edition
+═══════════════════════════════════════════ */
+:root{
+  --saffron:#FF6B00;--saffron2:#FF9A3C;--saffron-glow:rgba(255,107,0,.35);
+  --green:#00FF88;--green2:#138808;--green-glow:rgba(0,255,136,.25);
+  --blue:#00D4FF;--blue-glow:rgba(0,212,255,.2);
+  --gold:#FFD700;--gold-glow:rgba(255,215,0,.3);
+  --bg0:#020408;--bg1:#04080F;--bg2:#060C16;--bg3:#0A1220;
+  --glass:rgba(255,255,255,.04);--glass2:rgba(255,255,255,.07);
+  --glass-border:rgba(255,255,255,.08);
+  --text1:#F0F4FF;--text2:#8899BB;--text3:#4A5A80;
+  --r8:8px;--r16:16px;--r24:24px;--r32:32px;
+  --cinzel:'Cinzel',Georgia,serif;
+  --outfit:'Outfit',system-ui,sans-serif;
+  --hindi:'Noto Sans Devanagari',sans-serif;
+  --ease-spring:cubic-bezier(.34,1.56,.64,1);
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;overflow-x:hidden}
+body{
+  font-family:var(--outfit);
+  background:var(--bg0);
+  color:var(--text1);
+  overflow-x:hidden;
+  cursor:none;
+}
+::selection{background:var(--saffron);color:#000}
+
+/* ── CUSTOM CURSOR ── */
+#cursor{
+  position:fixed;width:12px;height:12px;
+  background:var(--saffron);border-radius:50%;
+  pointer-events:none;z-index:99999;
+  transform:translate(-50%,-50%);
+  transition:width .2s,height .2s,background .2s;
+  mix-blend-mode:screen;
+}
+#cursor-ring{
+  position:fixed;width:40px;height:40px;
+  border:1px solid rgba(255,107,0,.5);border-radius:50%;
+  pointer-events:none;z-index:99998;
+  transform:translate(-50%,-50%);
+  transition:all .12s ease-out;
+}
+body:has(button:hover) #cursor,body:has(a:hover) #cursor{
+  width:20px;height:20px;background:var(--gold);
+}
+body:has(button:hover) #cursor-ring,body:has(a:hover) #cursor-ring{
+  width:60px;height:60px;border-color:var(--gold);
+}
+
+/* ── CANVAS BACKGROUND ── */
+#bgCanvas{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.03'/%3E%3C/svg%3E");
+  opacity:.4;pointer-events:none;z-index:1;
+}
+
+/* ── SKIP LINK ── */
+.skip{
+  position:fixed;top:-100px;left:16px;
+  background:var(--saffron);color:#000;
+  padding:8px 20px;border-radius:var(--r8);
+  font-weight:700;z-index:99999;
+  text-decoration:none;transition:top .2s;
+}
+.skip:focus{top:16px}
+
+/* ── NAVBAR ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;
+  z-index:1000;
+  padding:0 32px;
+  display:flex;align-items:center;gap:16px;
+  height:68px;
+  background:rgba(2,4,8,.7);
+  backdrop-filter:blur(24px) saturate(200%);
+  -webkit-backdrop-filter:blur(24px) saturate(200%);
+  border-bottom:1px solid var(--glass-border);
+  transition:background .3s;
+}
+#nav::after{
+  content:'';
+  position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--saffron),var(--green),transparent);
+  opacity:.5;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:10px;
+  text-decoration:none;cursor:none;flex-shrink:0;
+}
+.logo-3d{
+  width:36px;height:36px;position:relative;
+  animation:logoSpin 8s linear infinite;
+}
+.logo-3d svg{width:100%;height:100%;}
+.logo-txt{
+  font-family:var(--cinzel);font-size:18px;font-weight:900;
+  background:linear-gradient(135deg,var(--saffron),var(--gold),var(--saffron2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;letter-spacing:1px;
+}
+.logo-txt em{
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;font-style:normal;
+}
+.nav-links{
+  display:flex;gap:4px;list-style:none;flex:1;justify-content:center;
+}
+.nav-links button{
+  background:none;border:none;cursor:none;
+  color:var(--text2);font-family:var(--outfit);
+  font-size:13px;font-weight:500;
+  padding:8px 14px;border-radius:var(--r8);
+  transition:all .2s;letter-spacing:.3px;
+  position:relative;overflow:hidden;
+}
+.nav-links button::before{
+  content:'';position:absolute;inset:0;
+  background:var(--glass2);opacity:0;
+  border-radius:var(--r8);transition:opacity .2s;
+}
+.nav-links button:hover,.nav-links button.active{
+  color:var(--text1);
+}
+.nav-links button:hover::before,.nav-links button.active::before{opacity:1}
+.nav-links button.active{
+  color:var(--saffron);
+  box-shadow:0 0 20px var(--saffron-glow);
+}
+.nav-actions{display:flex;align-items:center;gap:8px;}
+.pill-btn{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:100px;
+  padding:7px 16px;cursor:none;
+  font-family:var(--outfit);font-size:12px;font-weight:600;
+  color:var(--text2);transition:all .25s;letter-spacing:.5px;
+}
+.pill-btn:hover{
+  background:var(--saffron);color:#000;
+  border-color:var(--saffron);
+  box-shadow:0 0 24px var(--saffron-glow);
+}
+.hamburger{
+  display:none;background:none;border:none;
+  color:var(--text1);font-size:22px;cursor:none;
+}
+
+/* ── SECTIONS ── */
+.sec{display:none;position:relative;z-index:2;padding-top:68px}
+.sec.active{display:block;animation:secFadeIn .5s var(--ease-out) both}
+@keyframes secFadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── HOME HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;align-items:center;
+  padding:80px 60px 40px;
+  max-width:1400px;margin:0 auto;
+  gap:60px;
+  perspective:1200px;
+}
+.hero-left{flex:1}
+.hero-right{flex:1;display:flex;align-items:center;justify-content:center;position:relative}
+
+/* Tricolor top bar */
+.tribar{
+  position:absolute;top:68px;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--saffron) 33%,#fff 33%,#fff 66%,var(--green2) 66%);
+  opacity:.8;z-index:10;
+}
+
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:6px 16px;border-radius:100px;
+  background:rgba(255,107,0,.08);
+  border:1px solid rgba(255,107,0,.2);
+  font-size:12px;font-weight:600;
+  color:var(--saffron);letter-spacing:1px;
+  text-transform:uppercase;margin-bottom:28px;
+  animation:slideInLeft .8s var(--ease-spring) .2s both;
+}
+.hero-eyebrow span{
+  width:6px;height:6px;background:var(--saffron);
+  border-radius:50%;animation:pulseDot 2s infinite;
+}
+
+.hero-title{
+  font-family:var(--cinzel);
+  font-size:clamp(44px,6vw,88px);
+  font-weight:900;line-height:1.0;
+  margin-bottom:24px;
+}
+.hero-title .line1{
+  display:block;
+  background:linear-gradient(135deg,var(--saffron),var(--gold),#FF9A3C);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:slideInLeft .8s var(--ease-spring) .3s both;
+}
+.hero-title .line2{
+  display:block;color:var(--text1);
+  animation:slideInLeft .8s var(--ease-spring) .4s both;
+}
+.hero-title .line3{
+  display:block;
+  background:linear-gradient(135deg,var(--green),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:slideInLeft .8s var(--ease-spring) .5s both;
+}
+.hero-sub{
+  font-size:17px;color:var(--text2);
+  max-width:500px;line-height:1.75;margin-bottom:40px;
+  animation:slideInLeft .8s var(--ease-spring) .6s both;
+}
+.hero-cta{
+  display:flex;gap:16px;flex-wrap:wrap;margin-bottom:56px;
+  animation:slideInLeft .8s var(--ease-spring) .7s both;
+}
+.btn-glow{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:14px 32px;border-radius:var(--r16);
+  font-family:var(--outfit);font-size:15px;font-weight:700;
+  cursor:none;border:none;transition:all .3s var(--ease-spring);
+  position:relative;overflow:hidden;letter-spacing:.3px;
+}
+.btn-glow::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.15),transparent);
+  opacity:0;transition:opacity .3s;
+}
+.btn-glow:hover::before{opacity:1}
+.btn-glow.primary{
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  color:#fff;
+  box-shadow:0 8px 32px var(--saffron-glow),inset 0 1px 0 rgba(255,255,255,.2);
+}
+.btn-glow.primary:hover{
+  transform:translateY(-3px) scale(1.02);
+  box-shadow:0 16px 48px var(--saffron-glow),0 0 60px rgba(255,107,0,.2);
+}
+.btn-glow.secondary{
+  background:var(--glass);
+  color:var(--text1);
+  border:1px solid var(--glass-border);
+  backdrop-filter:blur(12px);
+}
+.btn-glow.secondary:hover{
+  transform:translateY(-3px);
+  border-color:var(--saffron);
+  box-shadow:0 8px 32px var(--saffron-glow);
+  background:rgba(255,107,0,.1);
+}
+
+.hero-stats{
+  display:flex;gap:40px;
+  animation:slideInLeft .8s var(--ease-spring) .8s both;
+}
+.stat{text-align:center;}
+.stat strong{
+  display:block;
+  font-family:var(--cinzel);font-size:32px;font-weight:900;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat span{font-size:11px;color:var(--text3);letter-spacing:.5px;text-transform:uppercase;}
+
+/* ── 3D BALLOT SCENE ── */
+.scene-3d{
+  width:340px;height:420px;
+  position:relative;
+  animation:sceneFloat 4s ease-in-out infinite;
+  transform-style:preserve-3d;
+}
+.ballot-3d{
+  position:absolute;top:50%;left:50%;
+  width:260px;
+  transform:translate(-50%,-50%) rotateY(-15deg) rotateX(5deg);
+  background:linear-gradient(145deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:var(--r24);
+  padding:28px;
+  backdrop-filter:blur(20px);
+  box-shadow:
+    0 40px 80px rgba(0,0,0,.6),
+    0 0 0 1px rgba(255,107,0,.1),
+    inset 0 1px 0 rgba(255,255,255,.1);
+  z-index:3;
+  transform-style:preserve-3d;
+}
+.ballot-3d::before{
+  content:'';position:absolute;
+  top:-1px;left:20px;right:20px;height:2px;
+  background:linear-gradient(90deg,var(--saffron),var(--gold),var(--green));
+  border-radius:100px;
+}
+.ballot-head{
+  font-family:var(--cinzel);font-size:10px;
+  letter-spacing:4px;color:var(--text3);
+  text-transform:uppercase;margin-bottom:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.ballot-head::before{content:'🇮🇳';}
+.ballot-opt{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 12px;border-radius:var(--r8);
+  margin-bottom:8px;font-size:13px;
+  color:var(--text2);transition:all .3s;cursor:none;
+}
+.ballot-opt.sel{
+  background:rgba(255,107,0,.1);
+  border:1px solid rgba(255,107,0,.3);
+  color:var(--saffron);font-weight:700;
+}
+.bcirc{
+  width:16px;height:16px;border-radius:50%;
+  border:2px solid currentColor;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+}
+.bcirc.filled{
+  background:var(--saffron);border-color:var(--saffron);color:#fff;
+  font-size:8px;font-weight:900;
+  box-shadow:0 0 12px var(--saffron-glow);
+}
+.ballot-stamp{
+  margin-top:16px;padding-top:12px;
+  border-top:1px dashed rgba(255,255,255,.1);
+  text-align:right;
+  font-size:11px;font-weight:900;
+  color:var(--green);letter-spacing:2px;
+  text-shadow:0 0 12px var(--green-glow);
+}
+
+/* Floating orbs */
+.orb{
+  position:absolute;border-radius:50%;
+  pointer-events:none;
+  animation:orbFloat var(--dur,4s) ease-in-out infinite;
+  animation-delay:var(--delay,0s);
+}
+.orb1{
+  width:120px;height:120px;top:-20px;right:-30px;
+  background:radial-gradient(circle,rgba(255,107,0,.2),transparent);
+  --dur:5s;
+}
+.orb2{
+  width:80px;height:80px;bottom:20px;left:-20px;
+  background:radial-gradient(circle,rgba(0,255,136,.15),transparent);
+  --dur:4s;--delay:.8s;
+}
+.orb3{
+  width:60px;height:60px;top:40%;right:-40px;
+  background:radial-gradient(circle,rgba(0,212,255,.15),transparent);
+  --dur:6s;--delay:1.5s;
+}
+
+/* 3D Badge chips */
+.chip-3d{
+  position:absolute;
+  padding:8px 16px;border-radius:100px;
+  backdrop-filter:blur(16px);
+  border:1px solid var(--glass-border);
+  font-size:12px;font-weight:700;
+  color:var(--text1);letter-spacing:.5px;
+  box-shadow:0 8px 24px rgba(0,0,0,.4);
+  animation:chipFloat var(--dur,3.5s) ease-in-out infinite;
+  animation-delay:var(--cd,0s);
+  z-index:5;
+}
+.chip1{top:10px;left:-20px;background:rgba(255,107,0,.15);border-color:rgba(255,107,0,.3);color:var(--saffron);--dur:3.5s;}
+.chip2{bottom:30px;right:-30px;background:rgba(0,255,136,.1);border-color:rgba(0,255,136,.2);color:var(--green);--dur:4s;--cd:.6s;}
+.chip3{top:45%;left:-40px;background:rgba(0,212,255,.1);border-color:rgba(0,212,255,.2);color:var(--blue);--dur:5s;--cd:1.2s;}
+
+/* ── FEATURES GRID ── */
+.features-wrap{
+  max-width:1400px;margin:0 auto;
+  padding:40px 60px 80px;
+}
+.sec-label{
+  text-align:center;margin-bottom:64px;
+}
+.sec-label h2{
+  font-family:var(--cinzel);
+  font-size:clamp(28px,4vw,48px);
+  font-weight:900;
+  background:linear-gradient(135deg,var(--text1),var(--text2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.sec-label p{color:var(--text2);font-size:16px;}
+
+.grid-3d{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:20px;
+}
+.card-3d{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r24);
+  padding:32px;
+  cursor:none;
+  position:relative;overflow:hidden;
+  transition:all .4s var(--ease-spring);
+  transform-style:preserve-3d;
+  will-change:transform;
+}
+.card-3d::before{
+  content:'';position:absolute;inset:0;border-radius:var(--r24);
+  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,107,0,.08),transparent 60%);
+  opacity:0;transition:opacity .4s;
+}
+.card-3d:hover::before{opacity:1;}
+.card-3d::after{
+  content:'';position:absolute;
+  top:-1px;left:20%;right:20%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--saffron),transparent);
+  opacity:0;transition:opacity .4s;
+}
+.card-3d:hover::after{opacity:1;}
+.card-3d:hover{
+  transform:translateY(-8px) rotateX(2deg) rotateY(-1deg) scale(1.01);
+  border-color:rgba(255,107,0,.25);
+  box-shadow:0 24px 60px rgba(0,0,0,.5),0 0 40px rgba(255,107,0,.08);
+}
+.c-icon{
+  font-size:44px;margin-bottom:20px;display:block;
+  filter:drop-shadow(0 0 12px var(--saffron-glow));
+}
+.card-3d h3{
+  font-family:var(--cinzel);font-size:17px;font-weight:700;
+  margin-bottom:10px;color:var(--text1);
+}
+.card-3d p{font-size:13px;color:var(--text2);line-height:1.7;}
+.c-arrow{
+  position:absolute;bottom:24px;right:24px;
+  width:32px;height:32px;border-radius:50%;
+  background:rgba(255,107,0,.1);
+  border:1px solid rgba(255,107,0,.2);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--saffron);font-size:14px;
+  transition:all .3s;
+}
+.card-3d:hover .c-arrow{
+  background:var(--saffron);color:#fff;
+  transform:translate(2px,-2px);
+  box-shadow:0 0 20px var(--saffron-glow);
+}
+
+/* ── FACTS ── */
+.facts-band{
+  background:linear-gradient(135deg,rgba(255,107,0,.06),rgba(0,255,136,.04));
+  border-top:1px solid var(--glass-border);
+  border-bottom:1px solid var(--glass-border);
+  padding:60px 60px;text-align:center;
+}
+.fact-slide{display:none;animation:fadeUp .5s var(--ease-out) both;}
+.fact-slide.on{display:block;}
+.fact-num{
+  font-family:var(--cinzel);font-size:80px;font-weight:900;
+  color:rgba(255,107,0,.12);line-height:1;display:block;
+}
+.fact-txt{font-size:20px;color:var(--text1);max-width:680px;margin:0 auto;line-height:1.6;}
+.fdots{display:flex;gap:8px;justify-content:center;margin-top:28px;}
+.fdot{
+  width:8px;height:8px;border-radius:50%;
+  background:rgba(255,255,255,.15);
+  border:none;cursor:none;transition:all .3s;
+}
+.fdot.on{
+  background:var(--saffron);
+  box-shadow:0 0 12px var(--saffron-glow);
+  transform:scale(1.3);
+}
+
+/* ── AI ASSISTANT ── */
+.chat-wrap{
+  max-width:860px;margin:0 auto;
+  padding:40px 40px 80px;
+}
+.chat-head{
+  display:flex;align-items:center;gap:16px;
+  margin-bottom:28px;
+  padding:24px;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r24);
+  backdrop-filter:blur(12px);
+}
+.ai-ava{
+  width:60px;height:60px;border-radius:50%;
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  display:flex;align-items:center;justify-content:center;
+  font-size:28px;flex-shrink:0;
+  box-shadow:0 0 24px var(--saffron-glow);
+  animation:aiPulse 3s ease-in-out infinite;
+}
+.chat-head-txt h2{
+  font-family:var(--cinzel);font-size:22px;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.chat-head-txt p{color:var(--text2);font-size:13px;margin-top:4px;}
+.ai-dot{
+  margin-left:auto;display:flex;align-items:center;gap:6px;
+  font-size:12px;color:var(--text3);
+}
+.ai-dot-glow{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--green);
+  box-shadow:0 0 8px var(--green-glow);
+  animation:pulseDot 2s infinite;
+}
+
+.chips-row{margin-bottom:20px;display:flex;flex-wrap:wrap;gap:8px;}
+.qchip{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:100px;padding:8px 16px;
+  font-size:12px;cursor:none;font-family:var(--outfit);
+  color:var(--text2);transition:all .25s;letter-spacing:.2px;
+}
+.qchip:hover{
+  background:rgba(255,107,0,.1);
+  border-color:rgba(255,107,0,.3);
+  color:var(--saffron);
+  box-shadow:0 0 16px rgba(255,107,0,.1);
+}
+
+.chat-win{
+  height:420px;overflow-y:auto;
+  padding:20px;margin-bottom:16px;
+  background:rgba(0,0,0,.3);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r24);
+  scroll-behavior:smooth;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,107,0,.3) transparent;
+}
+.chat-win::-webkit-scrollbar{width:4px;}
+.chat-win::-webkit-scrollbar-thumb{background:rgba(255,107,0,.3);border-radius:100px;}
+.msg{
+  display:flex;gap:12px;margin-bottom:20px;
+  animation:slideMsg .3s var(--ease-out) both;
+}
+.msg.usr{flex-direction:row-reverse;}
+.m-ava{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-size:16px;
+}
+.m-ava.bot{background:linear-gradient(135deg,var(--saffron),#FF4500);}
+.m-ava.usr{background:linear-gradient(135deg,var(--blue),#0066FF);}
+.m-bub{
+  max-width:75%;padding:14px 18px;
+  border-radius:20px;font-size:14px;line-height:1.7;
+  color:var(--text1);
+}
+.m-bub.bot{
+  background:var(--glass2);
+  border:1px solid var(--glass-border);
+  border-radius:20px 20px 20px 4px;
+  backdrop-filter:blur(8px);
+}
+.m-bub.usr{
+  background:linear-gradient(135deg,rgba(255,107,0,.25),rgba(255,107,0,.1));
+  border:1px solid rgba(255,107,0,.2);
+  border-radius:20px 20px 4px 20px;
+}
+.m-bub ul{padding-left:16px;margin-top:8px;}
+.m-bub li{margin-bottom:4px;}
+.m-time{font-size:10px;color:var(--text3);margin-top:6px;display:block;}
+.typing-ind{
+  display:flex;gap:4px;align-items:center;
+  padding:4px 0;
+}
+.td{
+  width:8px;height:8px;background:var(--text3);border-radius:50%;
+  animation:tdBounce 1.2s infinite;
+}
+.td:nth-child(2){animation-delay:.2s;}
+.td:nth-child(3){animation-delay:.4s;}
+
+.chat-input-bar{
+  display:flex;gap:10px;align-items:flex-end;
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r24);
+  padding:12px 12px 12px 16px;
+  backdrop-filter:blur(16px);
+  transition:border-color .3s;
+}
+.chat-input-bar:focus-within{
+  border-color:rgba(255,107,0,.4);
+  box-shadow:0 0 24px rgba(255,107,0,.08);
+}
+.v-btn{
+  background:none;border:none;font-size:20px;
+  cursor:none;padding:4px;border-radius:var(--r8);
+  transition:all .2s;flex-shrink:0;
+}
+.v-btn:hover{background:rgba(255,107,0,.15);}
+.v-btn.on{animation:pulseDot 1s infinite;color:red;}
+#chatIn{
+  flex:1;background:none;border:none;outline:none;
+  resize:none;max-height:120px;overflow-y:auto;
+  font-family:var(--outfit);font-size:15px;
+  color:var(--text1);line-height:1.5;
+}
+#chatIn::placeholder{color:var(--text3);}
+.send-btn-3d{
+  width:42px;height:42px;border-radius:50%;border:none;cursor:none;
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;transition:all .3s var(--ease-spring);
+  box-shadow:0 4px 16px var(--saffron-glow);
+  color:#fff;
+}
+.send-btn-3d:hover{
+  transform:scale(1.1) rotate(15deg);
+  box-shadow:0 8px 28px var(--saffron-glow);
+}
+.send-btn-3d svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2.5;}
+.chat-disc{
+  text-align:center;font-size:11px;color:var(--text3);
+  margin-top:10px;
+}
+.chat-disc a{color:rgba(255,107,0,.7);}
+
+/* ── TIMELINE ── */
+.tl-wrap{
+  max-width:1000px;margin:0 auto;
+  padding:0 40px 80px;
+  position:relative;
+}
+.tl-wrap::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;
+  width:1px;
+  background:linear-gradient(to bottom,transparent,var(--saffron),var(--green),transparent);
+  transform:translateX(-50%);
+}
+.tl-step{
+  display:grid;grid-template-columns:1fr 56px 1fr;
+  gap:0;align-items:center;
+  margin-bottom:40px;
+  opacity:0;transform:translateY(30px);
+  transition:all .6s var(--ease-out);
+}
+.tl-step.visible{opacity:1;transform:translateY(0);}
+.tl-card{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r16);
+  padding:24px;
+  transition:all .4s var(--ease-spring);
+  cursor:none;
+}
+.tl-card:hover{
+  background:var(--glass2);
+  border-color:rgba(255,107,0,.25);
+  transform:scale(1.02);
+  box-shadow:0 16px 48px rgba(0,0,0,.4),0 0 32px rgba(255,107,0,.06);
+}
+.tl-step:nth-child(odd) .tl-left{order:0;}
+.tl-step:nth-child(odd) .tl-right{visibility:hidden;}
+.tl-step:nth-child(even) .tl-left{visibility:hidden;}
+.tl-step:nth-child(even) .tl-right{order:2;}
+.tl-icon{font-size:28px;margin-bottom:10px;}
+.tl-card h3{
+  font-family:var(--cinzel);font-size:15px;font-weight:700;
+  margin-bottom:8px;color:var(--text1);
+}
+.tl-card p{font-size:13px;color:var(--text2);line-height:1.6;}
+.tl-dur{
+  display:inline-block;margin-top:8px;
+  padding:3px 10px;border-radius:100px;
+  background:rgba(255,107,0,.1);
+  color:var(--saffron);font-size:11px;font-weight:600;
+}
+.tl-node{
+  width:52px;height:52px;border-radius:50%;
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--cinzel);font-weight:900;font-size:18px;color:#fff;
+  box-shadow:0 0 24px var(--saffron-glow),0 0 0 4px rgba(255,107,0,.1);
+  z-index:2;margin:0 auto;flex-shrink:0;
+  transition:all .4s;
+}
+.tl-step.visible .tl-node{
+  box-shadow:0 0 32px var(--saffron-glow),0 0 0 8px rgba(255,107,0,.1);
+}
+
+/* ── VOTER GUIDE ── */
+.guide-wrap{max-width:1000px;margin:0 auto;padding:0 40px 80px;}
+.g-tabs{
+  display:flex;gap:8px;justify-content:center;
+  margin-bottom:40px;flex-wrap:wrap;
+}
+.g-tab{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:100px;padding:10px 24px;
+  cursor:none;font-family:var(--outfit);
+  font-size:13px;font-weight:600;
+  color:var(--text2);transition:all .3s;
+  letter-spacing:.3px;
+}
+.g-tab:hover{color:var(--text1);border-color:rgba(255,107,0,.3);}
+.g-tab.on{
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  color:#fff;border-color:transparent;
+  box-shadow:0 4px 20px var(--saffron-glow);
+}
+.g-panel{display:none;animation:fadeUp .4s var(--ease-out) both;}
+.g-panel.on{display:block;}
+.g-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;}
+.g-card{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r16);padding:24px;
+  transition:all .3s var(--ease-spring);cursor:none;
+}
+.g-card:hover{
+  border-color:rgba(255,107,0,.3);
+  transform:translateY(-4px);
+  box-shadow:0 16px 40px rgba(0,0,0,.4);
+}
+.g-card.hl{border-color:rgba(255,107,0,.4);background:rgba(255,107,0,.05);}
+.g-card .gi{font-size:32px;margin-bottom:12px;}
+.g-card h4{font-family:var(--cinzel);font-size:15px;margin-bottom:6px;color:var(--text1);}
+.g-card p{font-size:13px;color:var(--text2);line-height:1.6;}
+.step-row{
+  display:flex;gap:16px;padding:16px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r16);margin-bottom:10px;
+  transition:all .3s;cursor:none;
+}
+.step-row:hover{border-color:rgba(255,107,0,.3);transform:translateX(4px);}
+.step-badge{
+  width:36px;height:36px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:800;font-size:14px;color:#fff;
+  box-shadow:0 0 12px var(--saffron-glow);
+}
+.step-txt h4{font-weight:600;margin-bottom:4px;color:var(--text1);font-size:14px;}
+.step-txt p{font-size:12px;color:var(--text2);}
+/* EPIC Card visual */
+.epic-visual{
+  background:linear-gradient(135deg,#0D1B2A,#1B2838,#2D1B69);
+  border-radius:var(--r24);padding:32px;color:#fff;
+  position:relative;overflow:hidden;margin-bottom:24px;
+  border:1px solid rgba(255,255,255,.08);
+  box-shadow:0 24px 60px rgba(0,0,0,.6);
+}
+.epic-visual::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(circle at 80% 20%,rgba(255,107,0,.1),transparent 50%),
+    radial-gradient(circle at 20% 80%,rgba(0,212,255,.08),transparent 50%);
+}
+.epic-flag{font-size:36px;margin-bottom:8px;}
+.epic-name{font-family:var(--cinzel);font-size:22px;margin-bottom:4px;}
+.epic-sub{font-size:12px;opacity:.6;margin-bottom:24px;letter-spacing:2px;text-transform:uppercase;}
+.epic-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.ef label{font-size:9px;opacity:.5;text-transform:uppercase;letter-spacing:1px;}
+.ef p{font-size:14px;font-weight:700;}
+.of-links{max-width:1000px;margin:0 auto;padding:0 40px 80px;}
+.of-links h3{font-family:var(--cinzel);font-size:22px;margin-bottom:16px;color:var(--text1);}
+.of-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;}
+.of-a{
+  background:linear-gradient(135deg,rgba(255,107,0,.1),rgba(255,107,0,.05));
+  border:1px solid rgba(255,107,0,.2);
+  border-radius:var(--r16);padding:16px 20px;
+  text-decoration:none;font-size:13px;font-weight:600;
+  color:var(--saffron);text-align:center;display:block;
+  transition:all .3s;letter-spacing:.3px;
+}
+.of-a:hover{
+  background:var(--saffron);color:#000;
+  transform:translateY(-3px);
+  box-shadow:0 8px 24px var(--saffron-glow);
+}
+
+/* ── QUIZ ── */
+.quiz-wrap{max-width:740px;margin:0 auto;padding:40px 40px 80px;}
+.quiz-hd{text-align:center;margin-bottom:40px;}
+.quiz-hd h2{font-family:var(--cinzel);font-size:36px;margin-bottom:12px;}
+.quiz-hd p{color:var(--text2);}
+.q-infos{display:flex;gap:16px;justify-content:center;margin-bottom:32px;}
+.q-info{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r16);padding:20px 28px;text-align:center;
+  min-width:100px;
+}
+.q-info span{font-size:28px;display:block;margin-bottom:4px;}
+.q-info strong{
+  font-family:var(--cinzel);font-size:24px;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  display:block;
+}
+.q-info small{font-size:11px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;}
+.diff-row{text-align:center;margin-bottom:32px;}
+.diff-row p{margin-bottom:12px;color:var(--text2);font-size:14px;}
+.diff-btns{display:flex;gap:8px;justify-content:center;}
+.dbtn{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:100px;padding:10px 24px;cursor:none;
+  font-family:var(--outfit);font-size:13px;font-weight:600;
+  color:var(--text2);transition:all .3s;
+}
+.dbtn.on{
+  background:linear-gradient(135deg,rgba(255,107,0,.2),rgba(255,107,0,.1));
+  border-color:rgba(255,107,0,.4);color:var(--saffron);
+  box-shadow:0 0 20px rgba(255,107,0,.1);
+}
+.start-btn{
+  display:flex;margin:0 auto;
+  width:100%;max-width:300px;
+  justify-content:center;font-size:18px;padding:18px;
+}
+
+/* Quiz game */
+.qpbar{height:4px;background:rgba(255,255,255,.06);border-radius:100px;margin-bottom:16px;overflow:hidden;}
+.qpfill{
+  height:100%;
+  background:linear-gradient(90deg,var(--saffron),var(--gold));
+  border-radius:100px;transition:width .4s var(--ease-out);
+  box-shadow:0 0 12px var(--saffron-glow);
+}
+.q-meta{
+  display:flex;justify-content:space-between;align-items:center;
+  font-size:13px;color:var(--text2);margin-bottom:24px;
+}
+.q-timer{font-weight:700;color:var(--saffron);}
+.q-card{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r24);padding:32px;
+  margin-bottom:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,.4);
+}
+.q-txt{
+  font-size:18px;font-weight:600;margin-bottom:24px;
+  line-height:1.5;color:var(--text1);
+}
+.opts-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.opt{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r16);padding:14px 16px;
+  cursor:none;font-family:var(--outfit);font-size:14px;
+  color:var(--text2);text-align:left;transition:all .25s;line-height:1.4;
+}
+.opt:hover:not(:disabled){
+  border-color:rgba(255,107,0,.4);
+  background:rgba(255,107,0,.06);
+  color:var(--text1);
+  transform:translateY(-2px);
+}
+.opt.ok{
+  background:rgba(0,255,136,.08);
+  border-color:rgba(0,255,136,.4);
+  color:var(--green);
+  box-shadow:0 0 20px rgba(0,255,136,.1);
+}
+.opt.bad{
+  background:rgba(255,68,68,.08);
+  border-color:rgba(255,68,68,.4);
+  color:#FF4444;
+}
+.opt:disabled{cursor:not-allowed;}
+.q-exp{
+  background:rgba(255,107,0,.06);
+  border:1px solid rgba(255,107,0,.15);
+  border-radius:var(--r16);padding:16px;
+  font-size:13px;color:var(--text2);margin-bottom:16px;
+  animation:fadeUp .3s var(--ease-out) both;
+}
+
+/* Result */
+.result-box{text-align:center;}
+.res-emoji{font-size:80px;animation:bounce .5s var(--ease-spring) both;}
+.res-ring{
+  width:160px;height:160px;border-radius:50%;
+  background:conic-gradient(var(--saffron) var(--pct,0%),rgba(255,255,255,.06) 0%);
+  display:flex;align-items:center;justify-content:center;
+  margin:28px auto;position:relative;
+  box-shadow:0 0 48px var(--saffron-glow);
+}
+.res-ring::before{
+  content:'';position:absolute;
+  inset:8px;border-radius:50%;
+  background:var(--bg1);
+}
+.res-score{
+  position:relative;z-index:1;
+  font-family:var(--cinzel);font-size:52px;font-weight:900;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.res-acts{display:flex;gap:12px;justify-content:center;margin-top:24px;flex-wrap:wrap;}
+
+/* ── BOOTH FINDER ── */
+.finder-wrap{max-width:1000px;margin:0 auto;padding:0 40px 80px;}
+.search-bar{
+  display:flex;gap:12px;margin-bottom:12px;
+}
+.search-bar input{
+  flex:1;background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r16);padding:14px 20px;
+  font-family:var(--outfit);font-size:15px;color:var(--text1);
+  outline:none;transition:all .3s;
+  backdrop-filter:blur(8px);
+}
+.search-bar input::placeholder{color:var(--text3);}
+.search-bar input:focus{
+  border-color:rgba(255,107,0,.4);
+  box-shadow:0 0 24px rgba(255,107,0,.08);
+}
+.search-bar button{
+  background:linear-gradient(135deg,var(--saffron),#FF4500);
+  color:#fff;border:none;border-radius:var(--r16);
+  padding:14px 28px;cursor:none;font-family:var(--outfit);
+  font-size:15px;font-weight:700;transition:all .3s;
+  box-shadow:0 4px 16px var(--saffron-glow);
+}
+.search-bar button:hover{
+  transform:translateY(-2px);
+  box-shadow:0 8px 28px var(--saffron-glow);
+}
+.loc-row{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;}
+#stSel{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r16);padding:10px 16px;
+  font-family:var(--outfit);font-size:14px;color:var(--text1);
+  cursor:none;outline:none;
+}
+#stSel option{background:var(--bg2);}
+.map-box{
+  height:380px;border-radius:var(--r24);overflow:hidden;
+  border:1px solid var(--glass-border);margin-bottom:24px;
+  position:relative;
+  background:linear-gradient(135deg,var(--bg2),var(--bg3));
+}
+#gmap{width:100%;height:100%;}
+.map-ph{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,#020A14,#04122A);
+}
+.map-ph .mi{font-size:64px;margin-bottom:16px;}
+.map-ph h3{font-family:var(--cinzel);font-size:24px;margin-bottom:8px;color:var(--text1);}
+.map-ph p{color:var(--text3);font-size:14px;}
+.finder-2col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.info-card{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--r24);padding:28px;
+  backdrop-filter:blur(8px);
+}
+.info-card h3{font-family:var(--cinzel);font-size:20px;margin-bottom:16px;color:var(--text1);}
+.info-card ol{padding-left:20px;color:var(--text2);font-size:14px;line-height:1.9;}
+.info-card a{color:var(--saffron);}
+.tip-box{
+  background:rgba(255,107,0,.05);
+  border:1px solid rgba(255,107,0,.15);
+  border-radius:var(--r8);padding:12px;margin-top:16px;
+  font-size:12px;color:var(--text2);
+}
+.eci-lnk{
+  display:flex;align-items:center;gap:8px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--glass-border);
+  border-radius:var(--r8);padding:10px 14px;
+  text-decoration:none;font-size:13px;font-weight:500;
+  color:var(--text2);margin-bottom:8px;transition:all .3s;cursor:none;
+}
+.eci-lnk:hover{
+  background:rgba(255,107,0,.1);
+  border-color:rgba(255,107,0,.3);
+  color:var(--saffron);
+  transform:translateX(4px);
+}
+
+/* ── SECTION HEADERS ── */
+.sec-hd{
+  text-align:center;
+  padding:60px 40px 50px;
+  max-width:900px;margin:0 auto;
+}
+.sec-hd h2{
+  font-family:var(--cinzel);font-size:clamp(28px,5vw,52px);
+  font-weight:900;margin-bottom:12px;
+  background:linear-gradient(135deg,var(--text1) 40%,var(--text2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.sec-hd p{color:var(--text2);font-size:17px;}
+.sec-hd h2 .hi{
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+
+/* ── FOOTER ── */
+footer{
+  background:rgba(0,0,0,.6);
+  border-top:1px solid var(--glass-border);
+  padding:48px 60px;text-align:center;
+  position:relative;z-index:2;
+  backdrop-filter:blur(16px);
+}
+footer::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--saffron),var(--green),transparent);
+  opacity:.4;
+}
+.foot-logo{
+  font-family:var(--cinzel);font-size:22px;font-weight:900;
+  background:linear-gradient(135deg,var(--saffron),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:12px;
+}
+.foot-p{color:var(--text3);font-size:13px;margin-bottom:16px;}
+.foot-links{display:flex;gap:24px;justify-content:center;margin-bottom:20px;}
+.foot-links a{color:rgba(255,107,0,.7);text-decoration:none;font-size:13px;transition:color .2s;}
+.foot-links a:hover{color:var(--saffron);}
+.foot-copy{font-size:11px;color:var(--text3);}
+
+/* ── MOBILE MENU ── */
+.mob-menu{
+  display:none;flex-direction:column;
+  background:rgba(2,4,8,.98);
+  border-top:1px solid var(--glass-border);
+  padding:12px;
+  backdrop-filter:blur(24px);
+}
+.mob-menu.open{display:flex;}
+.mob-menu button{
+  background:none;border:none;text-align:left;
+  padding:14px 20px;border-radius:var(--r8);
+  font-size:15px;cursor:none;color:var(--text2);
+  font-family:var(--outfit);transition:all .2s;
+}
+.mob-menu button:hover{
+  background:rgba(255,107,0,.08);color:var(--saffron);
+}
+
+/* ── ANIMATIONS ── */
+@keyframes logoSpin{to{transform:rotate(360deg)}}
+@keyframes sceneFloat{0%,100%{transform:translateY(0) rotateX(2deg)}50%{transform:translateY(-12px) rotateX(-2deg)}}
+@keyframes orbFloat{0%,100%{transform:scale(1) translate(0,0)}50%{transform:scale(1.1) translate(4px,-8px)}}
+@keyframes chipFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes pulseDot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+@keyframes aiPulse{0%,100%{box-shadow:0 0 24px var(--saffron-glow)}50%{box-shadow:0 0 48px var(--saffron-glow),0 0 80px rgba(255,107,0,.1)}}
+@keyframes slideInLeft{from{opacity:0;transform:translateX(-30px)}to{opacity:1;transform:translateX(0)}}
+@keyframes slideMsg{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+@keyframes tdBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1024px){
+  .hero{grid-template-columns:1fr;padding:60px 32px;}
+  .hero-right{display:none;}
+  .grid-3d{grid-template-columns:1fr 1fr;}
+  .features-wrap{padding:40px 32px 60px;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .hamburger{display:block;}
+  .hero{padding:48px 24px;}
+  .grid-3d{grid-template-columns:1fr;}
+  .features-wrap,.tl-wrap,.guide-wrap,.quiz-wrap,.finder-wrap,.chat-wrap{padding-left:20px;padding-right:20px;}
+  .opts-grid,.finder-2col{grid-template-columns:1fr;}
+  .q-infos{gap:8px;}
+  .q-info{padding:14px 16px;min-width:80px;}
+  .tl-wrap::before{left:24px;}
+  .tl-step{grid-template-columns:48px 1fr;}
+  .tl-step .tl-right,.tl-step:nth-child(even) .tl-left{display:none;}
+  .tl-step:nth-child(even) .tl-right{display:block;visibility:visible;}
+  .tl-node{margin:0 4px;}
+  .facts-band{padding:40px 24px;}
+}
+@media(max-width:480px){
+  .hero-cta{flex-direction:column;}
+  .hero-stats{gap:20px;}
+  .stat strong{font-size:24px;}
+  .g-tabs,.diff-btns{flex-wrap:wrap;justify-content:center;}
+  .search-bar{flex-direction:column;}
+}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{
+  outline:2px solid var(--saffron);outline-offset:3px;
+}
+@media print{#nav,footer,.hero-cta,.chat-input-bar{display:none;}.sec{display:block!important;}}
+</style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- BG CANVAS -->
+<canvas id="bgCanvas"></canvas>
+
+<!-- SKIP LINK -->
+<a href="#main" class="skip">Skip to content</a>
+
+<!-- NAVBAR -->
+<nav id="nav" role="navigation">
+  <a class="nav-logo" onclick="go('home')" tabindex="0" aria-label="VaakDoot AI Home">
+    <div class="logo-3d">
+      <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="18" cy="18" r="16" stroke="#FF6B00" stroke-width="2"/>
+        <circle cx="18" cy="18" r="10" stroke="#FFD700" stroke-width="1" stroke-dasharray="3 2"/>
+        <circle cx="18" cy="18" r="3" fill="#FF6B00"/>
+        <line x1="18" y1="2" x2="18" y2="34" stroke="#FF6B00" stroke-width=".8" opacity=".4"/>
+        <line x1="2" y1="18" x2="34" y2="18" stroke="#FF6B00" stroke-width=".8" opacity=".4"/>
+        <line x1="6.7" y1="6.7" x2="29.3" y2="29.3" stroke="#FFD700" stroke-width=".6" opacity=".3"/>
+        <line x1="29.3" y1="6.7" x2="6.7" y2="29.3" stroke="#FFD700" stroke-width=".6" opacity=".3"/>
+      </svg>
+    </div>
+    <span class="logo-txt">VaakDoot <em>AI</em></span>
+  </a>
+  <ul class="nav-links" role="menubar">
+    <li><button onclick="go('home')" id="n-home" class="active" role="menuitem">Home</button></li>
+    <li><button onclick="go('chat')" id="n-chat" role="menuitem">AI Assistant</button></li>
+    <li><button onclick="go('tl')" id="n-tl" role="menuitem">Timeline</button></li>
+    <li><button onclick="go('guide')" id="n-guide" role="menuitem">Voter Guide</button></li>
+    <li><button onclick="go('quiz')" id="n-quiz" role="menuitem">Quiz</button></li>
+    <li><button onclick="go('find')" id="n-find" role="menuitem">Find Booth</button></li>
+  </ul>
+  <div class="nav-actions">
+    <button class="pill-btn" onclick="swLang()" id="langB" aria-label="Toggle language">हिंदी</button>
+    <button class="hamburger" onclick="swMenu()" aria-label="Menu">☰</button>
+  </div>
+</nav>
+<div class="mob-menu" id="mobMenu" role="menu">
+  <button onclick="go('home');swMenu()">🏠 Home</button>
+  <button onclick="go('chat');swMenu()">🤖 AI Assistant</button>
+  <button onclick="go('tl');swMenu()">📅 Timeline</button>
+  <button onclick="go('guide');swMenu()">📖 Voter Guide</button>
+  <button onclick="go('quiz');swMenu()">🎯 Quiz</button>
+  <button onclick="go('find');swMenu()">📍 Find Booth</button>
+</div>
+<div class="tribar"></div>
+
+<!-- MAIN -->
+<main id="main">
+
+<!-- ══ HOME ══ -->
+<section id="s-home" class="sec active">
+  <div class="hero">
+    <div class="hero-left">
+      <div class="hero-eyebrow"><span></span> Powered by Google Gemini AI &nbsp;🇮🇳</div>
+      <h1 class="hero-title">
+        <span class="line1" id="hl1">Your Vote.</span>
+        <span class="line2" id="hl2">Your Voice.</span>
+        <span class="line3" id="hl3">Your Democracy.</span>
+      </h1>
+      <p class="hero-sub" id="hsub">India's most intelligent election education assistant. Understand the election process, know your voter rights, and participate confidently in democracy.</p>
+      <div class="hero-cta">
+        <button class="btn-glow primary" onclick="go('chat')">🤖 Chat with AI</button>
+        <button class="btn-glow secondary" onclick="go('tl')">📅 Explore Timeline</button>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><strong>900M+</strong><span id="hs1">Eligible Voters</span></div>
+        <div class="stat"><strong>28+</strong><span id="hs2">States</span></div>
+        <div class="stat"><strong>22</strong><span id="hs3">Languages</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="scene-3d">
+        <div class="orb orb1"></div><div class="orb orb2"></div><div class="orb orb3"></div>
+        <div class="ballot-3d">
+          <div class="ballot-head">भारत निर्वाचन आयोग · BALLOT</div>
+          <div class="ballot-opt sel"><div class="bcirc filled">✓</div> Candidate A</div>
+          <div class="ballot-opt"><div class="bcirc"></div> Candidate B</div>
+          <div class="ballot-opt"><div class="bcirc"></div> Candidate C</div>
+          <div class="ballot-opt"><div class="bcirc"></div> NOTA</div>
+          <div class="ballot-stamp">✓ VOTED — EVM #4829</div>
+        </div>
+        <div class="chip-3d chip1">🗳️ EVM</div>
+        <div class="chip-3d chip2">⚖️ ECI</div>
+        <div class="chip-3d chip3">📱 e-EPIC</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Features -->
+  <div class="features-wrap">
+    <div class="sec-label">
+      <h2>Everything About India's Democracy</h2>
+      <p>Six powerful tools to make you an informed voter</p>
+    </div>
+    <div class="grid-3d">
+      <div class="card-3d" onclick="go('chat')" tabindex="0" role="button" aria-label="AI Assistant">
+        <span class="c-icon">🤖</span>
+        <h3>AI Election Assistant</h3>
+        <p>Ask anything about elections in Hindi or English. Powered by Google Gemini AI.</p>
+        <div class="c-arrow">→</div>
+      </div>
+      <div class="card-3d" onclick="go('tl')" tabindex="0" role="button">
+        <span class="c-icon">📅</span>
+        <h3>Election Timeline</h3>
+        <p>Visual step-by-step journey of the entire Indian election process.</p>
+        <div class="c-arrow">→</div>
+      </div>
+      <div class="card-3d" onclick="go('guide')" tabindex="0" role="button">
+        <span class="c-icon">📖</span>
+        <h3>Voter Registration</h3>
+        <p>Complete guide to get your EPIC card and register as a voter.</p>
+        <div class="c-arrow">→</div>
+      </div>
+      <div class="card-3d" onclick="go('quiz')" tabindex="0" role="button">
+        <span class="c-icon">🎯</span>
+        <h3>Knowledge Quiz</h3>
+        <p>Test yourself on elections, constitution, and voting rights interactively.</p>
+        <div class="c-arrow">→</div>
+      </div>
+      <div class="card-3d" onclick="go('find')" tabindex="0" role="button">
+        <span class="c-icon">📍</span>
+        <h3>Polling Booth Finder</h3>
+        <p>Locate your nearest polling station using Google Maps.</p>
+        <div class="c-arrow">→</div>
+      </div>
+      <div class="card-3d" tabindex="0" role="text">
+        <span class="c-icon">🌐</span>
+        <h3>Multilingual</h3>
+        <p>Full Hindi + English support with voice input in both languages.</p>
+        <div style="position:absolute;bottom:24px;right:24px;font-size:24px;">🇮🇳</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facts -->
+  <div class="facts-band">
+    <h2 style="font-family:var(--cinzel);font-size:clamp(22px,4vw,40px);margin-bottom:32px;background:linear-gradient(135deg,#fff,#aaa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Did You Know?</h2>
+    <div id="factsC">
+      <div class="fact-slide on"><span class="fact-num">01</span><p class="fact-txt">India is the world's largest democracy with over 96.8 crore registered voters as of 2024.</p></div>
+      <div class="fact-slide"><span class="fact-num">02</span><p class="fact-txt">The Election Commission of India was established on January 25, 1950 — celebrated as National Voters' Day.</p></div>
+      <div class="fact-slide"><span class="fact-num">03</span><p class="fact-txt">NOTA (None of the Above) option was introduced in Indian elections in 2013 by the Supreme Court.</p></div>
+      <div class="fact-slide"><span class="fact-num">04</span><p class="fact-txt">EVMs were first used in all constituencies in the 2004 General Elections, replacing paper ballots nationwide.</p></div>
+    </div>
+    <div class="fdots">
+      <button class="fdot on" onclick="gf(0)"></button>
+      <button class="fdot" onclick="gf(1)"></button>
+      <button class="fdot" onclick="gf(2)"></button>
+      <button class="fdot" onclick="gf(3)"></button>
+    </div>
+  </div>
+</section>
+
+<!-- ══ AI CHAT ══ -->
+<section id="s-chat" class="sec" aria-label="AI Assistant">
+  <div class="chat-wrap">
+    <div class="chat-head">
+      <div class="ai-ava">🤖</div>
+      <div class="chat-head-txt">
+        <h2>VaakDoot AI</h2>
+        <p id="chatSub">Powered by Google Gemini • Ask anything about Indian elections</p>
+      </div>
+      <div class="ai-dot"><div class="ai-dot-glow"></div><span id="aiSt">Ready</span></div>
+    </div>
+    <div class="chips-row" role="list">
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="How do I register as a voter in India?">🗳️ Register to vote?</button>
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="What is the election process in India step by step?">📋 Election steps?</button>
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="What is EVM and VVPAT?">💻 EVM & VVPAT?</button>
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="What are my rights as a voter?">⚖️ Voter rights?</button>
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="मतदान की उम्र क्या है? मैं कैसे रजिस्टर करूं?">🇮🇳 मतदान की उम्र?</button>
+      <button class="qchip" onclick="sp(this.dataset.q)" data-q="What is Model Code of Conduct?">📜 Model Code?</button>
+    </div>
+    <div class="chat-win" id="cWin" role="log" aria-live="polite">
+      <div class="msg">
+        <div class="m-ava bot">🤖</div>
+        <div class="m-bub bot">
+          <p>Namaste! 🙏 I'm <strong>VaakDoot</strong>, your AI election guide powered by Google Gemini.</p>
+          <p style="margin-top:8px;">I can help you with:</p>
+          <ul>
+            <li>📋 Complete Indian election process</li>
+            <li>🗳️ How to register & get your EPIC card</li>
+            <li>⚖️ Your rights as a voter</li>
+            <li>💻 How EVMs & VVPATs work</li>
+            <li>🏛️ Role of Election Commission of India</li>
+          </ul>
+          <p style="margin-top:8px;">Ask me anything in <strong>Hindi or English!</strong> 🇮🇳</p>
+          <span class="m-time">Just now</span>
+        </div>
+      </div>
+    </div>
+    <div class="chat-input-bar">
+      <button class="v-btn" id="vBtn" onclick="togV()" title="Voice input" aria-label="Voice input">🎤</button>
+      <textarea id="chatIn" placeholder="Ask about elections... (English या हिंदी में)" rows="1" aria-label="Type your election question" onkeydown="kd(event)" oninput="ar(this)"></textarea>
+      <button class="send-btn-3d" onclick="sendMsg()" aria-label="Send">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+    <p class="chat-disc">⚠️ AI-generated content. Always verify with official <a href="https://eci.gov.in" target="_blank" rel="noopener">eci.gov.in</a></p>
+  </div>
+</section>
+
+<!-- ══ TIMELINE ══ -->
+<section id="s-tl" class="sec" aria-label="Election Timeline">
+  <div class="sec-hd">
+    <h2>Election <span class="hi">Timeline</span></h2>
+    <p>From announcement to oath — every step of India's democratic process</p>
+  </div>
+  <div class="tl-wrap" id="tlWrap" role="list"></div>
+</section>
+
+<!-- ══ VOTER GUIDE ══ -->
+<section id="s-guide" class="sec" aria-label="Voter Guide">
+  <div class="sec-hd">
+    <h2>Voter <span class="hi">Registration Guide</span></h2>
+    <p>Everything you need to become a registered voter in India</p>
+  </div>
+  <div class="guide-wrap">
+    <div class="g-tabs" role="tablist">
+      <button class="g-tab on" onclick="gt('elig')" id="gt-elig" role="tab">✅ Eligibility</button>
+      <button class="g-tab" onclick="gt('docs')" id="gt-docs" role="tab">📄 Documents</button>
+      <button class="g-tab" onclick="gt('proc')" id="gt-proc" role="tab">📋 Process</button>
+      <button class="g-tab" onclick="gt('epic')" id="gt-epic" role="tab">🪪 EPIC Card</button>
+    </div>
+    <div id="gContent" role="tabpanel"></div>
+  </div>
+  <div class="of-links">
+    <h3>Official Resources</h3>
+    <div class="of-grid">
+      <a href="https://voters.eci.gov.in" target="_blank" rel="noopener" class="of-a">🌐 voters.eci.gov.in</a>
+      <a href="https://eci.gov.in" target="_blank" rel="noopener" class="of-a">🏛️ eci.gov.in</a>
+      <a href="https://nvsp.in" target="_blank" rel="noopener" class="of-a">📋 nvsp.in</a>
+      <a href="tel:1950" class="of-a">📞 Helpline: 1950</a>
+    </div>
+  </div>
+</section>
+
+<!-- ══ QUIZ ══ -->
+<section id="s-quiz" class="sec" aria-label="Quiz">
+  <div class="quiz-wrap">
+    <div class="quiz-hd">
+      <h2 style="font-family:var(--cinzel);font-size:36px;margin-bottom:12px;background:linear-gradient(135deg,var(--saffron),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">Election Knowledge Quiz</h2>
+      <p style="color:var(--text2);">Test your knowledge about Indian elections and democracy</p>
+    </div>
+    <div id="qStart">
+      <div class="q-infos">
+        <div class="q-info"><span>❓</span><strong>15</strong><small>Questions</small></div>
+        <div class="q-info"><span>⏱️</span><strong>30s</strong><small>Per Q</small></div>
+        <div class="q-info"><span>🏆</span><strong>100</strong><small>Max Score</small></div>
+      </div>
+      <div class="diff-row">
+        <p>Choose difficulty:</p>
+        <div class="diff-btns">
+          <button class="dbtn on" onclick="sd('easy')" data-d="easy">🟢 Easy</button>
+          <button class="dbtn" onclick="sd('medium')" data-d="medium">🟡 Medium</button>
+          <button class="dbtn" onclick="sd('hard')" data-d="hard">🔴 Hard</button>
+        </div>
+      </div>
+      <button class="btn-glow primary start-btn" onclick="startQ()">🎯 Start Quiz</button>
+    </div>
+    <div id="qGame" class="hidden">
+      <div class="qpbar"><div class="qpfill" id="qpf"></div></div>
+      <div class="q-meta">
+        <span id="qCtr" aria-live="polite">Q 1 of 15</span>
+        <span class="q-timer" id="qTmr" aria-live="polite">⏱️ 30s</span>
+        <span>Score: <strong id="lSc" style="color:var(--saffron)">0</strong></span>
+      </div>
+      <div class="q-card">
+        <p class="q-txt" id="qTxt" aria-live="polite"></p>
+        <div class="opts-grid" id="optsG" role="radiogroup"></div>
+      </div>
+      <div class="q-exp hidden" id="qExp" aria-live="polite"></div>
+      <button class="btn-glow primary hidden" id="nxtBtn" onclick="nxtQ()" style="margin-top:8px;">Next →</button>
+    </div>
+    <div id="qRes" class="quiz-result hidden" aria-live="polite">
+      <div class="result-box">
+        <div class="res-emoji" id="rEmoji"></div>
+        <h3 id="rTitle" style="font-family:var(--cinzel);font-size:28px;margin:16px 0;"></h3>
+        <div class="res-ring" id="rRing"><span class="res-score" id="rSc"></span></div>
+        <p id="rMsg" style="color:var(--text2);max-width:500px;margin:0 auto;"></p>
+        <div id="rWrong" style="text-align:left;margin-top:24px;max-height:200px;overflow-y:auto;"></div>
+        <div class="res-acts">
+          <button class="btn-glow primary" onclick="startQ()">🔄 Play Again</button>
+          <button class="btn-glow secondary" onclick="go('chat')">🤖 Ask AI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ BOOTH FINDER ══ -->
+<section id="s-find" class="sec" aria-label="Polling Booth Finder">
+  <div class="sec-hd">
+    <h2>Find Your <span class="hi">Polling Booth</span></h2>
+    <p>Locate the nearest polling station with Google Maps</p>
+  </div>
+  <div class="finder-wrap">
+    <div class="search-bar">
+      <input type="text" id="locIn" placeholder="Enter your city, constituency or area..." aria-label="Search location"/>
+      <button onclick="srchBooth()">🔍 Search</button>
+    </div>
+    <div class="loc-row">
+      <button class="btn-glow secondary" style="padding:10px 20px;font-size:13px;" onclick="myLoc()">📍 Use My Location</button>
+      <select id="stSel" aria-label="Select state" onchange="updSt()">
+        <option value="">Select State</option>
+        <option value="Chhattisgarh">Chhattisgarh</option>
+        <option value="Maharashtra">Maharashtra</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Uttar Pradesh">Uttar Pradesh</option>
+        <option value="Gujarat">Gujarat</option>
+        <option value="Rajasthan">Rajasthan</option>
+        <option value="Karnataka">Karnataka</option>
+        <option value="Tamil Nadu">Tamil Nadu</option>
+        <option value="West Bengal">West Bengal</option>
+        <option value="Bihar">Bihar</option>
+      </select>
+    </div>
+    <div class="map-box" role="application" aria-label="Map">
+      <div id="gmap"></div>
+      <div class="map-ph" id="mph">
+        <div class="mi">🗺️</div>
+        <h3>Interactive Map</h3>
+        <p>Search a location above to find polling booths</p>
+      </div>
+    </div>
+    <div class="finder-2col">
+      <div class="info-card" id="bInfo">
+        <h3>📋 How to Find Your Booth</h3>
+        <ol>
+          <li>Visit <a href="https://voters.eci.gov.in" target="_blank" rel="noopener">voters.eci.gov.in</a></li>
+          <li>Click "Know Your Polling Station"</li>
+          <li>Enter your EPIC card number</li>
+          <li>View booth address and map</li>
+        </ol>
+        <div class="tip-box">💡 <strong>Tip:</strong> Your booth is also printed on the voter slip delivered before election day!</div>
+      </div>
+      <div class="info-card">
+        <h3>🔗 Quick ECI Links</h3>
+        <a href="https://voters.eci.gov.in" target="_blank" rel="noopener" class="eci-lnk">🗳️ Search Electoral Roll</a>
+        <a href="https://voters.eci.gov.in/download-eroll" target="_blank" rel="noopener" class="eci-lnk">📥 Download e-EPIC</a>
+        <a href="https://voters.eci.gov.in/booth-search" target="_blank" rel="noopener" class="eci-lnk">📍 Booth Locator</a>
+        <a href="tel:1950" class="eci-lnk">📞 Voter Helpline: 1950</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="foot-logo">VaakDoot AI</div>
+  <p class="foot-p">India's most advanced AI election education platform. Powered by Google Gemini.</p>
+  <div class="foot-links">
+    <a href="https://eci.gov.in" target="_blank" rel="noopener">ECI</a>
+    <a href="https://voters.eci.gov.in" target="_blank" rel="noopener">Voter Portal</a>
+    <a href="https://nvsp.in" target="_blank" rel="noopener">NVSP</a>
+  </div>
+  <p class="foot-copy">🇮🇳 Made for Virtual: PromptWars Hackathon | Google Gemini Powered</p>
+</footer>
+
+<!-- Google Maps -->
+<script>
+window.initMap=function(){
+  const el=document.getElementById('gmap');
+  if(!el)return;
+  const m=new google.maps.Map(el,{
+    center:{lat:20.5937,lng:78.9629},zoom:5,
+    styles:[
+      {elementType:"geometry",stylers:[{color:"#0a1220"}]},
+      {elementType:"labels.text.fill",stylers:[{color:"#8899bb"}]},
+      {featureType:"road",elementType:"geometry",stylers:[{color:"#1a2a5e"}]},
+      {featureType:"water",elementType:"geometry",stylers:[{color:"#020a14"}]},
+      {featureType:"poi",stylers:[{visibility:"off"}]},
+    ]
+  });
+  window.GM=m;
+  document.getElementById('mph').style.display='none';
+};
+</script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=YOUR_GOOGLE_MAPS_KEY&callback=initMap"></script>
+
+<script>
+/* ═══════════════════════════════════════
+   VAAKDOOT AI — JAVASCRIPT ENGINE
+═══════════════════════════════════════ */
+'use strict';
+
+// ── CONFIG ──
+const GK='YOUR_GEMINI_API_KEY'; // Replace with actual key
+const GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
+
+// ── STATE ──
+const S={lang:'en',hist:[],cFact:0,fInt:null,qDiff:'easy',qQs:[],qIdx:0,qScore:0,qWrong:[],qAnswered:false,qTmrInt:null,qTLeft:30,gTab:'elig',listening:false};
+
+// ── CURSOR ──
+const cursor=document.getElementById('cursor'),cRing=document.getElementById('cursor-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
+(function animR(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;cRing.style.left=rx+'px';cRing.style.top=ry+'px';requestAnimationFrame(animR);})();
+
+// ── CANVAS PARTICLE BG ──
+(function(){
+  const cvs=document.getElementById('bgCanvas');
+  const ctx=cvs.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=cvs.width=window.innerWidth;H=cvs.height=window.innerHeight;}
+  resize();window.addEventListener('resize',()=>{resize();init();});
+  function init(){
+    pts=[];
+    const N=Math.min(Math.floor(W*H/12000),120);
+    for(let i=0;i<N;i++)pts.push({
+      x:Math.random()*W,y:Math.random()*H,
+      vx:(Math.random()-.5)*.4,vy:(Math.random()-.5)*.4,
+      r:Math.random()*1.5+.5,
+      c:Math.random()<.33?'#FF6B00':Math.random()<.5?'#00FF88':'#00D4FF',
+      a:Math.random()*.6+.2
+    });
+  }
+  init();
+  let mox=W/2,moy=H/2;
+  document.addEventListener('mousemove',e=>{mox=e.clientX;moy=e.clientY;});
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // Draw connections
+    for(let i=0;i<pts.length;i++){
+      for(let j=i+1;j<pts.length;j++){
+        const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y;
+        const dist=Math.sqrt(dx*dx+dy*dy);
+        if(dist<140){
+          ctx.beginPath();
+          ctx.strokeStyle=`rgba(255,107,0,${.08*(1-dist/140)})`;
+          ctx.lineWidth=.5;
+          ctx.moveTo(pts[i].x,pts[i].y);
+          ctx.lineTo(pts[j].x,pts[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+    // Draw particles
+    for(const p of pts){
+      p.x+=p.vx;p.y+=p.vy;
+      if(p.x<0||p.x>W)p.vx*=-1;
+      if(p.y<0||p.y>H)p.vy*=-1;
+      // Mouse repel
+      const dx=p.x-mox,dy=p.y-moy,d=Math.sqrt(dx*dx+dy*dy);
+      if(d<100){const f=(100-d)/100*.8;p.vx+=f*dx/d*.05;p.vy+=f*dy/d*.05;}
+      // Speed cap
+      const spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy);
+      if(spd>1.5){p.vx=p.vx/spd*1.5;p.vy=p.vy/spd*1.5;}
+      ctx.beginPath();
+      ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=p.c.replace(')',`,${p.a})`).replace('rgb','rgba').replace('#','rgba('+parseInt(p.c.slice(1,3),16)+','+parseInt(p.c.slice(3,5),16)+','+parseInt(p.c.slice(5,7),16)+','+p.a+')');
+      // Simple fill
+      ctx.fillStyle=p.a>0?p.c:p.c;
+      ctx.globalAlpha=p.a;
+      ctx.fill();
+      ctx.globalAlpha=1;
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+// ── 3D CARD TILT ──
+document.querySelectorAll('.card-3d').forEach(card=>{
+  card.addEventListener('mousemove',e=>{
+    const r=card.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width-.5)*20;
+    const y=((e.clientY-r.top)/r.height-.5)*-20;
+    card.style.transform=`translateY(-8px) rotateY(${x}deg) rotateX(${y}deg) scale(1.01)`;
+    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
+    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
+  });
+  card.addEventListener('mouseleave',()=>{
+    card.style.transform='';
+  });
+});
+
+// ── FACTS ──
+S.fInt=setInterval(()=>{S.cFact=(S.cFact+1)%4;gf(S.cFact);},5000);
+function gf(i){
+  S.cFact=i;
+  document.querySelectorAll('.fact-slide').forEach((f,j)=>f.classList.toggle('on',j===i));
+  document.querySelectorAll('.fdot').forEach((d,j)=>d.classList.toggle('on',j===i));
+}
+
+// ── NAV ──
+function go(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.remove('active'));
+  const nb=document.getElementById('n-'+id);if(nb)nb.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='tl')bldTL();
+  if(id==='guide')bldG(S.gTab);
+  if(id==='quiz')initQz();
+}
+function swMenu(){
+  const m=document.getElementById('mobMenu');
+  m.classList.toggle('open');
+}
+
+// ── LANGUAGE ──
+const TRANS={
+  hl1:{en:'Your Vote.',hi:'आपका वोट।'},
+  hl2:{en:'Your Voice.',hi:'आपकी आवाज़।'},
+  hl3:{en:'Your Democracy.',hi:'आपका लोकतंत्र।'},
+  hsub:{en:"India's most intelligent election education assistant.",hi:"भारत का सबसे बुद्धिमान चुनाव शिक्षा सहायक।"},
+  hs1:{en:'Eligible Voters',hi:'पात्र मतदाता'},
+  hs2:{en:'States',hi:'राज्य'},
+  hs3:{en:'Languages',hi:'भाषाएं'},
+  chatSub:{en:'Powered by Google Gemini • Ask anything about elections',hi:'Google Gemini द्वारा • चुनाव के बारे में कुछ भी पूछें'},
+};
+function swLang(){
+  S.lang=S.lang==='en'?'hi':'en';
+  document.getElementById('langB').textContent=S.lang==='en'?'हिंदी':'English';
+  Object.entries(TRANS).forEach(([id,t])=>{
+    const el=document.getElementById(id);if(el)el.textContent=t[S.lang]||t.en;
+  });
+  bldTL();bldG(S.gTab);
+}
+
+// ── TIMELINE DATA ──
+const TLD=[
+  {icon:'📢',en:'Election Announcement',hi:'चुनाव की घोषणा',ed:'The Election Commission announces the election schedule including dates for voting, nominations, and results.',hd:'ECI चुनाव कार्यक्रम की घोषणा करता है।',dur:'Day 0'},
+  {icon:'⚖️',en:'Model Code of Conduct',hi:'आदर्श आचार संहिता',ed:'MCC comes into immediate effect, restricting parties from using government resources for campaigns.',hd:'MCC तुरंत लागू होती है, दलों को सरकारी संसाधन उपयोग से रोकती है।',dur:'Day 0'},
+  {icon:'📋',en:'Voter Roll Finalization',hi:'मतदाता सूची अंतिमकरण',ed:'ECI finalizes and publishes the electoral rolls. Citizens can verify their name on the official portal.',hd:'ECI मतदाता सूची अंतिम करता और प्रकाशित करता है।',dur:'Week 1–2'},
+  {icon:'📄',en:'Filing of Nominations',hi:'नामांकन दाखिल करना',ed:'Candidates file nomination papers with the Returning Officer with security deposit and asset declaration.',hd:'उम्मीदवार रिटर्निंग अधिकारी के पास नामांकन दाखिल करते हैं।',dur:'Week 2–3'},
+  {icon:'🔍',en:'Scrutiny of Nominations',hi:'नामांकन की जाँच',ed:'Returning Officers examine all nomination papers for validity. Invalid nominations are rejected.',hd:'रिटर्निंग अधिकारी सभी नामांकन पत्रों की जाँच करते हैं।',dur:'Day after nominations'},
+  {icon:'🚪',en:'Withdrawal of Candidatures',hi:'उम्मीदवारी वापसी',ed:'Candidates may withdraw within a specified period. Final list of contesting candidates is then published.',hd:'उम्मीदवार एक निर्धारित अवधि में चुनाव से नाम वापस ले सकते हैं।',dur:'Week 3'},
+  {icon:'📣',en:'Election Campaign',hi:'चुनाव प्रचार',ed:'Parties and candidates campaign across constituencies. Campaign ends 48 hours before polling.',hd:'दल और उम्मीदवार प्रचार करते हैं। मतदान से 48 घंटे पहले बंद।',dur:'2–3 Weeks'},
+  {icon:'🗳️',en:'Polling Day (Voting)',hi:'मतदान दिवस',ed:'Citizens cast votes using EVMs. VVPAT slips confirm votes. Multi-phase polling for large states.',hd:'नागरिक EVM से वोट देते हैं। VVPAT पर्ची वोट की पुष्टि करती है।',dur:'Single/Multiple Dates'},
+  {icon:'🔒',en:'EVM Sealing',hi:'EVM सीलिंग',ed:'After polling, EVMs are sealed and stored in strong rooms with 24/7 CCTV surveillance.',hd:'मतदान के बाद EVM सील करके सुरक्षित कमरों में रखी जाती है।',dur:'Polling Day Evening'},
+  {icon:'📊',en:'Vote Counting',hi:'मतगणना',ed:'EVMs are opened under tight security. Postal ballots counted first, then EVM votes round by round.',hd:'EVM को सुरक्षित गणना केंद्रों में खोला जाता है।',dur:'Counting Day'},
+  {icon:'🏆',en:'Declaration of Results',hi:'परिणामों की घोषणा',ed:'Returning Officers declare winning candidates. Results published on ECI website in real time.',hd:'रिटर्निंग अधिकारी विजेता उम्मीदवारों की घोषणा करते हैं।',dur:'Counting Day'},
+  {icon:'🏛️',en:'Government Formation',hi:'सरकार गठन',ed:'Winning party invited to form government. Leader sworn in as PM/CM, completing the democratic cycle.',hd:'विजेता दल को सरकार बनाने के लिए आमंत्रित किया जाता है।',dur:'2–3 Weeks after Results'},
+];
+
+function bldTL(){
+  const w=document.getElementById('tlWrap');if(!w)return;
+  const l=S.lang;
+  w.innerHTML=TLD.map((s,i)=>`
+    <div class="tl-step" role="listitem" style="animation-delay:${i*.1}s">
+      <div class="tl-left tl-card">
+        <div class="tl-icon">${s.icon}</div>
+        <h3>${l==='hi'?s.hi:s.en}</h3>
+        <p>${l==='hi'?s.hd:s.ed}</p>
+        <span class="tl-dur">${s.dur}</span>
+      </div>
+      <div class="tl-node" aria-label="Step ${i+1}">${i+1}</div>
+      <div class="tl-right tl-card">
+        <div class="tl-icon">${s.icon}</div>
+        <h3>${l==='hi'?s.hi:s.en}</h3>
+        <p>${l==='hi'?s.hd:s.ed}</p>
+        <span class="tl-dur">${s.dur}</span>
+      </div>
+    </div>
+  `).join('');
+  // Intersection observer
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+  },{threshold:.1});
+  document.querySelectorAll('.tl-step').forEach(s=>obs.observe(s));
+}
+
+// ── GUIDE DATA ──
+const GD={
+  elig:{
+    title:'Voter Eligibility',title_hi:'मतदाता पात्रता',
+    items:[
+      {icon:'🎂',t:'Age 18+',th:'18+ आयु',d:'Must be at least 18 years of age on the qualifying date (January 1).',dh:'अर्हता तिथि पर कम से कम 18 वर्ष।',hl:true},
+      {icon:'🇮🇳',t:'Indian Citizen',th:'भारतीय नागरिक',d:'Must be a citizen of India. NRIs with Indian passports can also register.',dh:'भारत का नागरिक होना चाहिए।'},
+      {icon:'🏠',t:'Ordinary Resident',th:'साधारण निवासी',d:'Must be an ordinary resident of the constituency where you want to register.',dh:'निर्वाचन क्षेत्र का साधारण निवासी होना चाहिए।'},
+      {icon:'🧠',t:'Sound Mind',th:'स्वस्थ मस्तिष्क',d:'Not declared of unsound mind by a competent court.',dh:'किसी न्यायालय द्वारा अस्वस्थ मस्तिष्क घोषित न हो।'},
+      {icon:'⚖️',t:'Not Disqualified',th:'अयोग्य नहीं',d:'Not disqualified under any law relating to corrupt practices or election offences.',dh:'भ्रष्टाचार या चुनाव अपराध में अयोग्य न हो।'},
+    ]
+  },
+  docs:{
+    title:'Required Documents',title_hi:'आवश्यक दस्तावेज',
+    items:[
+      {icon:'📸',t:'Passport Photo',th:'पासपोर्ट फोटो',d:'Recent passport-size photograph (self-attested).',dh:'हाल की पासपोर्ट साइज फोटो।',hl:true},
+      {icon:'📋',t:'Form 6',th:'फॉर्म 6',d:'Application for inclusion in Electoral Roll. Fill online at voters.eci.gov.in.',dh:'मतदाता सूची में नाम के लिए आवेदन।',hl:true},
+      {icon:'🏠',t:'Address Proof',th:'पते का प्रमाण',d:'Any ONE of: Aadhaar, Passport, Driving License, Bank Passbook, utility bills (within 3 months).',dh:'आधार, पासपोर्ट, ड्राइविंग लाइसेंस में से एक।'},
+      {icon:'🎂',t:'Age Proof',th:'आयु का प्रमाण',d:'Birth Certificate, Class 10 Marksheet, Aadhaar Card, or Passport.',dh:'जन्म प्रमाण पत्र, कक्षा 10 की मार्कशीट।'},
+    ]
+  },
+  proc:{
+    title:'Registration Steps',title_hi:'पंजीकरण के चरण',
+    steps:[
+      {t:'Check Eligibility',th:'पात्रता जाँचें',d:'Verify you are 18+, Indian citizen, and ordinary resident of the constituency.',dh:'सुनिश्चित करें 18+, भारतीय नागरिक और निर्वाचन क्षेत्र के निवासी।'},
+      {t:'Visit voters.eci.gov.in',th:'पोर्टल पर जाएं',d:'Go to the ECI Voter Portal and click "New Voter Registration" → Form 6.',dh:'ECI पोर्टल पर जाएं, "नया मतदाता पंजीकरण" चुनें।'},
+      {t:'Fill Form 6',th:'फॉर्म 6 भरें',d:'Enter name, date of birth, address and upload your photograph.',dh:'नाम, जन्म तिथि, पता भरें और फोटो अपलोड करें।'},
+      {t:'Upload Documents',th:'दस्तावेज़ अपलोड करें',d:'Attach scanned address proof and age proof documents.',dh:'पते और आयु के दस्तावेजों की स्कैन कॉपी अपलोड करें।'},
+      {t:'Submit & Get ARN',th:'जमा करें और ARN पाएं',d:'Submit and save your Application Reference Number (ARN) to track status.',dh:'आवेदन जमा करें और ARN नोट करें।'},
+      {t:'BLO Verification',th:'BLO सत्यापन',d:'Booth Level Officer visits your address for verification within 30–45 days.',dh:'बूथ लेवल अधिकारी आपके पते पर सत्यापन करेगा।'},
+      {t:'Receive EPIC Card',th:'EPIC कार्ड प्राप्त करें',d:'After verification, Voter ID card is sent to your address or available as e-EPIC online.',dh:'सत्यापन के बाद EPIC कार्ड आपके पते पर आएगा।'},
+    ]
+  },
+  epic:{title:'EPIC Card (Voter ID)',title_hi:'EPIC कार्ड (मतदाता पहचान पत्र)'}
+};
+
+function gt(tab){
+  S.gTab=tab;
+  document.querySelectorAll('.g-tab').forEach(t=>{
+    t.classList.toggle('on',t.id==='gt-'+tab);
+    t.setAttribute('aria-selected',t.id==='gt-'+tab);
+  });
+  bldG(tab);
+}
+
+function bldG(tab){
+  const c=document.getElementById('gContent');if(!c)return;
+  const l=S.lang,d=GD[tab];if(!d)return;
+  let html='<div class="g-panel on">';
+  if(tab==='elig'||tab==='docs'){
+    html+=`<div class="g-grid">${d.items.map(item=>`
+      <div class="g-card${item.hl?' hl':''}">
+        <div class="gi">${item.icon}</div>
+        <h4>${l==='hi'?item.th:item.t}</h4>
+        <p>${l==='hi'?item.dh:item.d}</p>
+      </div>`).join('')}</div>`;
+  }else if(tab==='proc'){
+    html+=d.steps.map((s,i)=>`
+      <div class="step-row">
+        <div class="step-badge">${i+1}</div>
+        <div class="step-txt">
+          <h4>${l==='hi'?s.th:s.t}</h4>
+          <p>${l==='hi'?s.dh:s.d}</p>
+        </div>
+      </div>`).join('');
+  }else if(tab==='epic'){
+    html+=`
+      <div class="epic-visual">
+        <div class="epic-flag">🇮🇳</div>
+        <div class="epic-name">भारत निर्वाचन आयोग</div>
+        <div class="epic-sub">Election Commission of India — Voter ID</div>
+        <div class="epic-grid">
+          <div class="ef"><label>Voter Name</label><p>AMAN KUMAR GUPTA</p></div>
+          <div class="ef"><label>EPIC No.</label><p>ABC1234567</p></div>
+          <div class="ef"><label>Father's Name</label><p>KUMAR GUPTA</p></div>
+          <div class="ef"><label>Date of Birth</label><p>01/01/2000</p></div>
+          <div class="ef"><label>Gender</label><p>Male</p></div>
+          <div class="ef"><label>State</label><p>Chhattisgarh</p></div>
+        </div>
+      </div>
+      <div class="g-grid">
+        <div class="g-card hl"><div class="gi">💻</div><h4>Download e-EPIC</h4><p>voters.eci.gov.in → Login → Download e-EPIC as PDF instantly!</p></div>
+        <div class="g-card"><div class="gi">📱</div><h4>Voter Helpline App</h4><p>Download "Voter Helpline" app on Android/iOS for easy access.</p></div>
+        <div class="g-card"><div class="gi">📞</div><h4>Call 1950</h4><p>Toll-free Voter Helpline for registration, corrections, and queries.</p></div>
+        <div class="g-card"><div class="gi">🔄</div><h4>Corrections</h4><p>Use Form 8 online to update name, address, or photo on your voter card.</p></div>
+      </div>`;
+  }
+  html+='</div>';
+  c.innerHTML=html;
+}
+
+// Initialize guide on page load
+bldG('elig');
+
+// ── QUIZ DATA ──
+const QQ={
+  easy:[
+    {q:"What is the minimum age to vote in India?",qh:"भारत में मतदान की न्यूनतम आयु क्या है?",o:["16 years","18 years","21 years","25 years"],c:1,exp:"The 61st Constitutional Amendment (1988) reduced voting age from 21 to 18, effective Jan 28, 1989."},
+    {q:"Which body conducts elections in India?",qh:"भारत में चुनाव कौन आयोजित करता है?",o:["Supreme Court","Parliament","Election Commission of India","President's Office"],c:2,exp:"ECI (Art 324) is the autonomous constitutional body responsible for all election processes."},
+    {q:"What does EPIC stand for?",qh:"EPIC का पूर्ण रूप क्या है?",o:["Electoral Photo Identity Card","Election Participation Identity Card","Eligible Person Identity Certificate","Electoral Process Identity Card"],c:0,exp:"EPIC = Electoral Photo Identity Card — the Voter ID issued by ECI."},
+    {q:"What is EVM?",qh:"EVM क्या है?",o:["Election Verification Machine","Electronic Voting Machine","Electoral Vote Monitor","Electronic Voter Module"],c:1,exp:"EVM (Electronic Voting Machine) replaced paper ballots and was used in all constituencies from 2004."},
+    {q:"National Voters' Day is celebrated on:",qh:"राष्ट्रीय मतदाता दिवस मनाया जाता है:",o:["January 25","August 15","November 26","October 2"],c:0,exp:"January 25 — the day ECI was established in 1950 — is National Voters' Day."},
+    {q:"NOTA means?",qh:"NOTA का अर्थ?",o:["National Online Tally Application","None Of The Above","No Other Ticket Available","National Official Tally Authorization"],c:1,exp:"NOTA (None of the Above) was introduced by the Supreme Court in 2013 to allow voters to reject all candidates."},
+    {q:"How many Lok Sabha seats are in India?",qh:"भारत में लोकसभा की कितनी सीटें हैं?",o:["542","543","545","550"],c:1,exp:"The Lok Sabha has 543 elected seats, members elected by direct election from single-member constituencies."},
+  ],
+  medium:[
+    {q:"What is the Model Code of Conduct (MCC)?",qh:"आदर्श आचार संहिता क्या है?",o:["A law passed by Parliament","Guidelines issued by ECI for parties during elections","A punishment framework for fraud","A voter awareness campaign"],c:1,exp:"MCC guidelines are issued by ECI to ensure free and fair elections; they apply once election dates are announced."},
+    {q:"What is VVPAT?",qh:"VVPAT क्या है?",o:["Verified Voter Paper Audit Trail","Voter Verifiable Paper Audit Trail","Virtual Voting Paper Audit Technology","Validated Voter Paper Authentication Terminal"],c:1,exp:"VVPAT is a printer attached to EVMs that shows voters a paper slip confirming their vote for 7 seconds."},
+    {q:"Who appoints the Chief Election Commissioner?",qh:"मुख्य चुनाव आयुक्त को कौन नियुक्त करता है?",o:["Prime Minister","Speaker of Lok Sabha","President of India","Chief Justice"],c:2,exp:"The President of India appoints the CEC under Article 324 of the Constitution."},
+    {q:"Security deposit for Lok Sabha general candidate?",qh:"लोकसभा सामान्य उम्मीदवार की सुरक्षा जमा?",o:["₹5,000","₹10,000","₹25,000","₹1,00,000"],c:2,exp:"₹25,000 for general candidates; ₹12,500 for SC/ST candidates."},
+    {q:"First General Election of India was held in:",qh:"भारत का पहला आम चुनाव कब हुआ?",o:["1947–48","1950–51","1951–52","1952–53"],c:2,exp:"India's first General Election was held October 1951 – February 1952. Congress won; Nehru became PM."},
+    {q:"What is a Reserved Constituency?",qh:"'आरक्षित निर्वाचन क्षेत्र' क्या है?",o:["For women only","For SC/ST communities","With fewer voters","In border areas"],c:1,exp:"Reserved constituencies are earmarked for SC/ST candidates as part of constitutional affirmative action."},
+    {q:"Candidate must get ___ of votes to retain deposit:",qh:"सुरक्षा जमा बचाने के लिए उम्मीदवार को कितने वोट चाहिए?",o:["1/4","1/6","1/3","1/10"],c:1,exp:"A candidate must secure at least 1/6th of total valid votes to retain their security deposit."},
+  ],
+  hard:[
+    {q:"Article of Constitution establishing ECI?",qh:"ECI किस अनुच्छेद में है?",o:["Article 315","Article 324","Article 356","Article 370"],c:1,exp:"Article 324 establishes ECI with superintendence, direction, and control of all elections."},
+    {q:"Which amendment reduced voting age to 18?",qh:"किस संशोधन ने आयु 18 की?",o:["52nd","61st","73rd","44th"],c:1,exp:"The 61st Constitutional Amendment (1988) reduced voting age from 21 to 18."},
+    {q:"2024 Indian General Election phases?",qh:"2024 के आम चुनाव में चरण?",o:["5","6","7","8"],c:2,exp:"The 2024 (18th Lok Sabha) elections were held in 7 phases (Apr 19 – Jun 1); results on Jun 4."},
+    {q:"What is a 'Postal Ballot'?",qh:"'डाक मतपत्र' क्या है?",o:["Sent via post","For those who can't attend booths","Counted by post offices","For NRI voters only"],c:1,exp:"Postal ballots allow defense personnel, seniors 80+, disabled voters, and officials to vote without attending booths."},
+    {q:"Disqualification period under RPA for convicted?",qh:"RPA के तहत दोषी को कितने साल अयोग्यता?",o:["2 years","5 years","6 years","10 years"],c:2,exp:"Under Section 8 of RPA 1951, convicted persons (2+ years sentence) are disqualified for 6 years post-release."},
+    {q:"What is Delimitation?",qh:"'परिसीमन' क्या है?",o:["Campaign spending limits","Redrawing constituency boundaries based on census","Defining campaign promise limits","Setting voting time limits"],c:1,exp:"Delimitation redraws parliamentary/assembly constituencies based on census data. Last done on 2001 Census."},
+    {q:"Under which Article can President impose President's Rule?",qh:"किस अनुच्छेद में राष्ट्रपति शासन?",o:["Article 352","Article 356","Article 360","Article 370"],c:1,exp:"Article 356 (President's Rule) allows central government to take over state governance when constitutional machinery fails."},
+  ]
+};
+
+// ── QUIZ FUNCTIONS ──
+function initQz(){
+  S.qQs=shuf([...QQ[S.qDiff]]);
+  S.qIdx=0;S.qScore=0;S.qWrong=[];
+}
+function sd(d){
+  S.qDiff=d;
+  document.querySelectorAll('.dbtn').forEach(b=>{b.classList.toggle('on',b.dataset.d===d);b.setAttribute('aria-pressed',b.dataset.d===d);});
+  initQz();
+}
+function startQ(){
+  initQz();
+  document.getElementById('qStart').classList.add('hidden');
+  document.getElementById('qRes').classList.add('hidden');
+  document.getElementById('qGame').classList.remove('hidden');
+  document.getElementById('lSc').textContent='0';
+  renQ();
+}
+function renQ(){
+  const q=S.qQs[S.qIdx];if(!q){endQ();return;}
+  const tot=S.qQs.length,l=S.lang;
+  document.getElementById('qpf').style.width=`${(S.qIdx/tot)*100}%`;
+  document.getElementById('qCtr').textContent=`Q ${S.qIdx+1} of ${tot}`;
+  document.getElementById('qTxt').textContent=l==='hi'&&q.qh?q.qh:q.q;
+  document.getElementById('qExp').classList.add('hidden');
+  document.getElementById('nxtBtn').classList.add('hidden');
+  S.qAnswered=false;
+  document.getElementById('optsG').innerHTML=q.o.map((o,i)=>`
+    <button class="opt" onclick="selA(${i})" aria-label="Option ${String.fromCharCode(65+i)}: ${o}">
+      <strong>${String.fromCharCode(65+i)}.</strong> ${o}
+    </button>`).join('');
+  clearInterval(S.qTmrInt);
+  S.qTLeft=30;updTmr();
+  S.qTmrInt=setInterval(()=>{S.qTLeft--;updTmr();if(S.qTLeft<=0){clearInterval(S.qTmrInt);toQ();}},1000);
+}
+function updTmr(){
+  const el=document.getElementById('qTmr');
+  el.textContent=`⏱️ ${S.qTLeft}s`;
+  el.style.color=S.qTLeft<=10?'#FF4444':'var(--saffron)';
+}
+function selA(idx){
+  if(S.qAnswered)return;
+  S.qAnswered=true;clearInterval(S.qTmrInt);
+  const q=S.qQs[S.qIdx];
+  document.querySelectorAll('.opt').forEach((b,i)=>{
+    b.disabled=true;
+    if(i===q.c)b.classList.add('ok');
+    else if(i===idx&&idx!==q.c)b.classList.add('bad');
+  });
+  if(idx===q.c){const tb=Math.floor(S.qTLeft/3);S.qScore+=5+tb;document.getElementById('lSc').textContent=S.qScore;}
+  else S.qWrong.push({q:q.q,c:q.o[q.c],w:q.o[idx]});
+  const ex=document.getElementById('qExp');
+  ex.textContent=(idx===q.c?'✅ Correct! ':'❌ Incorrect. ')+q.exp;
+  ex.classList.remove('hidden');
+  document.getElementById('nxtBtn').classList.remove('hidden');
+}
+function toQ(){
+  if(S.qAnswered)return;S.qAnswered=true;
+  const q=S.qQs[S.qIdx];
+  document.querySelectorAll('.opt').forEach((b,i)=>{b.disabled=true;if(i===q.c)b.classList.add('ok');});
+  const ex=document.getElementById('qExp');
+  ex.textContent='⏰ Time\'s up! '+q.exp;ex.classList.remove('hidden');
+  document.getElementById('nxtBtn').classList.remove('hidden');
+  S.qWrong.push({q:q.q,c:q.o[q.c],w:'No answer'});
+}
+function nxtQ(){S.qIdx++;S.qIdx>=S.qQs.length?endQ():renQ();}
+function endQ(){
+  clearInterval(S.qTmrInt);
+  document.getElementById('qGame').classList.add('hidden');
+  document.getElementById('qRes').classList.remove('hidden');
+  const max=S.qQs.length*8,pct=Math.min(100,Math.round(S.qScore/max*100));
+  let e,t,m;
+  if(pct>=80){e='🏆';t='Election Expert!';m='Outstanding! You have exceptional knowledge of Indian elections. Ready to be a fully informed voter!';}
+  else if(pct>=60){e='🎉';t='Well Done!';m='Great knowledge! Keep exploring to become a democracy champion!';}
+  else if(pct>=40){e='📚';t='Keep Learning!';m='Good effort! Explore our Timeline and Guide to learn more!';}
+  else{e='💪';t='Keep Trying!';m='Democracy is complex! Every attempt brings more knowledge. Try again!';}
+  document.getElementById('rEmoji').textContent=e;
+  document.getElementById('rTitle').textContent=t;
+  document.getElementById('rSc').textContent=pct;
+  document.getElementById('rMsg').textContent=m;
+  document.getElementById('rRing').style.setProperty('--pct',pct+'%');
+  document.getElementById('rWrong').innerHTML=S.qWrong.length?
+    `<h4 style="margin-bottom:12px;font-weight:600;font-size:14px;">Review Mistakes:</h4>${S.qWrong.slice(0,3).map(w=>`<div style="background:rgba(255,68,68,.06);border:1px solid rgba(255,68,68,.2);border-radius:var(--r8);padding:12px;margin-bottom:8px;font-size:12px;"><p style="color:var(--text2)">Q: ${w.q}</p><p style="color:var(--green)">✅ ${w.c}</p><p style="color:var(--text3)">Your: ${w.w}</p></div>`).join('')}`
+    :'<p style="color:var(--green);font-weight:700;">🎉 Perfect! No mistakes!</p>';
+}
+
+// ── AI CHAT ──
+const SYS=`You are VaakDoot, an expert AI assistant on Indian elections built for the VaakDoot AI platform (PromptWars Hackathon). Be helpful, accurate, and educational. Respond in the same language as the user (Hindi if they write Hindi, English if English). Keep responses clear with bullet points when listing. Never give partisan opinions. Always recommend eci.gov.in for verification.`;
+async function sendMsg(){
+  const inp=document.getElementById('chatIn');
+  const txt=inp.value.trim();if(!txt)return;
+  addMsg('usr',txt);inp.value='';ar(inp);
+  const tid=showTyp();setAI('Thinking...',true);
+  try{
+    const r=await callGemini(txt);
+    remTyp(tid);addMsg('bot',r);setAI('Ready',false);
+  }catch(err){
+    remTyp(tid);
+    addMsg('bot',`⚠️ Connection error. Please configure your Gemini API key in app settings.\n\nFor now, explore our Timeline and Voter Guide sections! Error: ${err.message}`);
+    setAI('Ready',false);
+  }
+}
+async function callGemini(txt){
+  S.hist.push({role:'user',parts:[{text:txt}]});
+  const recent=S.hist.slice(-20);
+  const r=await fetch(GM_URL,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({
+      system_instruction:{parts:[{text:SYS}]},
+      contents:recent,
+      generationConfig:{temperature:.7,maxOutputTokens:1024,topP:.9}
+    })
+  });
+  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+  const d=await r.json();
+  const rep=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, I could not generate a response.';
+  S.hist.push({role:'model',parts:[{text:rep}]});
+  return rep;
+}
+function sp(q){document.getElementById('chatIn').value=q;sendMsg();}
+function addMsg(role,txt){
+  const w=document.getElementById('cWin');
+  const d=document.createElement('div');
+  d.className=`msg ${role==='usr'?'usr':''}`;
+  const t=new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const fmtd=txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\*(.*?)\*/g,'<em>$1</em>').replace(/^[-•] (.*$)/gm,'<li>$1</li>').replace(/\n/g,'<br>');
+  d.innerHTML=`<div class="m-ava ${role}">${role==='usr'?'👤':'🤖'}</div><div class="m-bub ${role}">${fmtd}<span class="m-time">${t}</span></div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;
+}
+function showTyp(){
+  const id='t'+Date.now(),w=document.getElementById('cWin');
+  const d=document.createElement('div');d.id=id;d.className='msg';
+  d.innerHTML=`<div class="m-ava bot">🤖</div><div class="m-bub bot"><div class="typing-ind"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
+  w.appendChild(d);w.scrollTop=w.scrollHeight;return id;
+}
+function remTyp(id){const e=document.getElementById(id);if(e)e.remove();}
+function setAI(t,on){
+  document.getElementById('aiSt').textContent=t;
+  document.querySelector('.ai-dot-glow').style.background=on?'#FF9A3C':'#00FF88';
+}
+function kd(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}}
+function ar(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+
+// ── VOICE ──
+let rec=null;
+(function(){
+  if('webkitSpeechRecognition'in window||'SpeechRecognition'in window){
+    const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+    rec=new SR();rec.continuous=false;rec.interimResults=false;
+    rec.onresult=e=>{document.getElementById('chatIn').value=e.results[0][0].transcript;togV();sendMsg();};
+    rec.onerror=()=>{S.listening=false;document.getElementById('vBtn').classList.remove('on');setAI('Ready',false);};
+    rec.onend=()=>{S.listening=false;document.getElementById('vBtn').classList.remove('on');};
+  }
+})();
+function togV(){
+  if(!rec){alert('Voice not supported. Use Chrome/Edge.');return;}
+  S.listening=!S.listening;
+  const b=document.getElementById('vBtn');
+  if(S.listening){rec.lang=S.lang==='hi'?'hi-IN':'en-IN';rec.start();b.classList.add('on');b.textContent='🔴';setAI('Listening...',true);}
+  else{rec.stop();b.classList.remove('on');b.textContent='🎤';setAI('Ready',false);}
+}
+
+// ── BOOTH FINDER ──
+function srchBooth(){
+  const loc=document.getElementById('locIn').value.trim();
+  if(!loc){alert('Please enter a location.');return;}
+  if(window.GM&&window.google){
+    const gc=new google.maps.Geocoder();
+    gc.geocode({address:loc+', India'},(results,status)=>{
+      if(status==='OK'){
+        window.GM.setCenter(results[0].geometry.location);
+        window.GM.setZoom(13);
+        new google.maps.Marker({map:window.GM,position:results[0].geometry.location,title:'Your Location'});
+        [[.003,.005],[-.004,.002],[.001,-.006]].forEach((off,i)=>{
+          new google.maps.Marker({map:window.GM,position:{lat:results[0].geometry.location.lat()+off[0],lng:results[0].geometry.location.lng()+off[1]},label:{text:''+(i+1),color:'white',fontWeight:'bold'},title:`Polling Booth ${i+1}`});
+        });
+      }else alert('Location not found. Try a more specific area.');
+    });
+  }else{
+    document.getElementById('bInfo').innerHTML=`<h3>📍 ${loc}</h3><p style="margin:12px 0;color:var(--text2)">To find your exact polling booth:</p><ol><li>Visit <a href="https://voters.eci.gov.in/booth-search" target="_blank" style="color:var(--saffron)">voters.eci.gov.in/booth-search</a></li><li>Enter your EPIC card number</li><li>Your booth details will be shown</li></ol><a href="https://voters.eci.gov.in" target="_blank" class="btn-glow primary" style="display:inline-flex;margin-top:16px;text-decoration:none;padding:12px 24px;">🔍 Open ECI Portal →</a>`;
+  }
+}
+function myLoc(){
+  if(!navigator.geolocation){alert('Geolocation not supported.');return;}
+  navigator.geolocation.getCurrentPosition(pos=>{
+    const{latitude:lat,longitude:lng}=pos.coords;
+    if(window.GM&&window.google){
+      const ll=new google.maps.LatLng(lat,lng);
+      window.GM.setCenter(ll);window.GM.setZoom(13);
+    }
+  },()=>alert('Could not get location. Please enter manually.'));
+}
+function updSt(){
+  const v=document.getElementById('stSel').value;
+  if(v)document.getElementById('locIn').value=v;
+}
+
+// ── UTILITIES ──
+function shuf(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+// ── SCROLL ANIMATIONS ──
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.style.opacity='1';
+      e.target.style.transform='translateY(0)';
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.card-3d,.q-info').forEach(el=>{
+  el.style.opacity='0';el.style.transform='translateY(24px)';
+  el.style.transition='opacity .6s var(--ease-out),transform .6s var(--ease-out)';
+  obs.observe(el);
+});
+
+// ── KEYBOARD ACCESS ──
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&document.getElementById('mobMenu').classList.contains('open'))swMenu();
+});
+document.querySelectorAll('[tabindex="0"]').forEach(el=>{
+  el.addEventListener('keydown',e=>{if(e.key==='Enter')el.click();});
+});
+
+// Init
+bldTL();
+</script>
+</body>
+</html>
