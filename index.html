@@ -39,27 +39,53 @@ body{
 }
 ::selection{background:var(--saffron);color:#000}
 
-/* ── CUSTOM CURSOR ── */
+/* ── ENHANCED NEXT-LEVEL CURSOR ── */
+@keyframes cursorPulse{0%{box-shadow:0 0 0 0 var(--saffron-glow);}50%{box-shadow:0 0 0 8px transparent;}100%{box-shadow:0 0 0 0 transparent;}}
+@keyframes ringRotate{0%{transform:translate(-50%,-50%) rotate(0deg);}100%{transform:translate(-50%,-50%) rotate(360deg);}}
+@keyframes glowRadiate{0%{opacity:1;transform:scale(1);}100%{opacity:0;transform:scale(1.5);}}
 #cursor{
-  position:fixed;width:12px;height:12px;
-  background:var(--saffron);border-radius:50%;
+  position:fixed;width:14px;height:14px;
+  background:radial-gradient(circle,var(--saffron),var(--saffron2));
+  border:2px solid var(--gold);border-radius:50%;
   pointer-events:none;z-index:99999;
   transform:translate(-50%,-50%);
-  transition:width .2s,height .2s,background .2s;
   mix-blend-mode:screen;
+  box-shadow:0 0 12px var(--saffron-glow),inset -2px -2px 4px rgba(0,0,0,.4);
+  animation:cursorPulse 2s infinite;
+}
+#cursor::before{
+  content:'';position:absolute;inset:-4px;
+  background:radial-gradient(circle,rgba(255,107,0,.2),transparent);
+  border-radius:50%;animation:glowRadiate .8s ease-out infinite;
 }
 #cursor-ring{
-  position:fixed;width:40px;height:40px;
-  border:1px solid rgba(255,107,0,.5);border-radius:50%;
-  pointer-events:none;z-index:99998;
+  position:fixed;width:48px;height:48px;
+  border:1.5px solid rgba(255,107,0,.6);
+  border-radius:50%;pointer-events:none;z-index:99998;
   transform:translate(-50%,-50%);
-  transition:all .12s ease-out;
+  box-shadow:0 0 20px var(--saffron-glow),inset 0 0 12px rgba(255,107,0,.1);
+  animation:ringRotate 4s linear infinite;
+  backdrop-filter:blur(2px);
+}
+#cursor-ring::after{
+  content:'';position:absolute;inset:0;
+  border:1px solid rgba(255,107,0,.3);border-radius:50%;
+  animation:ringRotate -6s linear infinite;
+}
+#cursor-trail{
+  position:fixed;width:8px;height:8px;
+  background:radial-gradient(circle,var(--saffron),var(--saffron-glow));
+  border-radius:50%;pointer-events:none;z-index:99997;
+  opacity:.6;filter:blur(.5px);
+  box-shadow:0 0 8px var(--saffron-glow);
 }
 body:has(button:hover) #cursor,body:has(a:hover) #cursor{
-  width:20px;height:20px;background:var(--gold);
+  width:22px;height:22px;background:radial-gradient(circle,var(--gold),var(--saffron));
+  border-color:var(--gold);box-shadow:0 0 20px var(--gold),inset -2px -2px 6px rgba(0,0,0,.6);
 }
 body:has(button:hover) #cursor-ring,body:has(a:hover) #cursor-ring{
-  width:60px;height:60px;border-color:var(--gold);
+  width:72px;height:72px;border-color:var(--gold);
+  box-shadow:0 0 30px rgba(255,215,0,.6),inset 0 0 16px rgba(255,215,0,.15);
 }
 
 /* ── CANVAS BACKGROUND ── */
@@ -1117,6 +1143,44 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 <div id="cursor"></div>
 <div id="cursor-ring"></div>
 
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal hidden">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h2>⚙️ API Configuration</h2>
+      <button class="close-btn" onclick="closeSettings()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p>Add your Gemini API key to enable AI Assistant features:</p>
+      <div class="form-group">
+        <label for="geminiKeyInput">Gemini API Key:</label>
+        <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." maxlength="100" />
+        <button class="btn-secondary" onclick="toggleKeyVisibility()">👁️ Show</button>
+      </div>
+      <div class="form-group">
+        <label for="mapsKeyInput">Google Maps API Key (Optional):</label>
+        <input type="password" id="mapsKeyInput" placeholder="AIzaSy..." maxlength="100" />
+        <button class="btn-secondary" onclick="toggleMapsVisibility()">👁️ Show</button>
+      </div>
+      <div class="info-box">
+        <strong>📚 How to get keys:</strong>
+        <ol>
+          <li>Visit <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
+          <li>Enable "Generative Language API" (for Gemini)</li>
+          <li>Go to Credentials → Create API Key</li>
+          <li>Enable billing (free tier has 15 requests/min limit)</li>
+          <li>Copy & paste your key above</li>
+        </ol>
+      </div>
+      <div class="error-box" id="settingsError" style="display:none;"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeSettings()">Cancel</button>
+      <button class="btn-primary" onclick="testAndSaveKeys()">Test & Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- BG CANVAS -->
 <canvas id="bgCanvas"></canvas>
 
@@ -1148,6 +1212,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
     <li><button onclick="go('find')" id="n-find" role="menuitem">Find Booth</button></li>
   </ul>
   <div class="nav-actions">
+    <button class="pill-btn" onclick="openSettings()" id="settingsBtn" aria-label="Settings" title="API Configuration">⚙️</button>
     <button class="pill-btn" onclick="swLang()" id="langB" aria-label="Toggle language">हिंदी</button>
     <button class="hamburger" onclick="swMenu()" aria-label="Menu">☰</button>
   </div>
@@ -1476,7 +1541,74 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   <p class="foot-copy">🇮🇳 Made for Virtual: PromptWars Hackathon | VaakDoot AI</p>
 </footer>
 
-<!-- Google Maps -->
+/* ── SETTINGS MODAL ── */
+.modal{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  z-index:10000;
+  transition:opacity .3s;
+}
+.modal.hidden{display:none}
+.modal-content{
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  border:1px solid var(--glass-border);border-radius:var(--r24);
+  box-shadow:0 20px 60px rgba(0,0,0,.8),0 0 40px var(--saffron-glow);
+  max-width:500px;width:90%;max-height:80vh;
+  overflow-y:auto;animation:slideUp .3s var(--ease-out);
+}
+@keyframes slideUp{from{opacity:0;transform:translateY(40px);}to{opacity:1;transform:translateY(0)}}
+.modal-header{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px;border-bottom:1px solid var(--glass-border);
+}
+.modal-header h2{font-size:18px;font-weight:600}
+.close-btn{background:none;border:none;font-size:24px;cursor:pointer;color:var(--text2);transition:color .2s}
+.close-btn:hover{color:var(--saffron)}
+.modal-body{padding:24px;display:flex;flex-direction:column;gap:16px}
+.modal-body p{color:var(--text2);font-size:13px}
+.form-group{display:flex;flex-direction:column;gap:8px}
+.form-group label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.5px}
+.form-group input{
+  background:var(--bg0);border:1px solid var(--glass-border);
+  color:var(--text1);padding:10px 12px;border-radius:var(--r8);
+  font-size:13px;font-family:monospace;transition:all .2s;
+}
+.form-group input:focus{outline:none;border-color:var(--saffron);box-shadow:0 0 10px var(--saffron-glow)}
+.form-group button{background:var(--glass2);border:1px solid var(--glass-border);color:var(--text2);padding:6px 10px;border-radius:var(--r8);font-size:12px;cursor:pointer;transition:all .2s}
+.form-group button:hover{background:var(--saffron);color:#000;border-color:var(--saffron)}
+.info-box{
+  background:var(--glass2);border:1px solid var(--green-glow);border-radius:var(--r8);
+  padding:12px;font-size:12px;color:var(--text2);
+}
+.info-box strong{color:var(--green);display:block;margin-bottom:8px}
+.info-box ol{margin-left:16px;line-height:1.6}
+.info-box a{color:var(--blue);text-decoration:none}
+.info-box a:hover{text-decoration:underline}
+.error-box{
+  background:rgba(255,0,0,.1);border:1px solid rgba(255,0,0,.3);
+  border-radius:var(--r8);padding:12px;color:#ff6b6b;font-size:12px;
+}
+.modal-footer{
+  display:flex;gap:12px;justify-content:flex-end;
+  padding:16px 20px;border-top:1px solid var(--glass-border);
+}
+.btn-primary,.btn-secondary{
+  padding:8px 16px;border-radius:var(--r8);font-weight:600;cursor:pointer;
+  transition:all .2s;font-size:12px;border:none;
+}
+.btn-primary{
+  background:var(--saffron);color:#000;box-shadow:0 0 12px var(--saffron-glow);
+}
+.btn-primary:hover{background:var(--saffron2);transform:translateY(-2px);box-shadow:0 4px 16px var(--saffron-glow)}
+.btn-secondary{
+  background:var(--glass2);color:var(--text2);border:1px solid var(--glass-border);
+}
+.btn-secondary:hover{background:var(--glass);border-color:var(--saffron);color:var(--saffron)}
+.settings-btn{color:var(--text2);transition:all .2s}
+.settings-btn:hover{color:var(--saffron);transform:rotate(45deg)}
+
+/* ── SETTINGS MODAL END ── */
 <script>
 window.initMap=function(){
   const el=document.getElementById('gmap');
@@ -1505,17 +1637,33 @@ window.initMap=function(){
 'use strict';
 
 // ── CONFIG ──
-const GK='AIzaSyBBL6dsUOGYOlJ6UrO8ZEm1DXj9yigljZA';
-const GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
+let GK=localStorage.getItem('vaakdoot_gemini_key')||'AIzaSyBBL6dsUOGYOlJ6UrO8ZEm1DXj9yigljZA';
+let GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
+let MAPS_KEY=localStorage.getItem('vaakdoot_maps_key')||'';
 
 // ── STATE ──
 const S={lang:'en',hist:[],cFact:0,fInt:null,qDiff:'easy',qQs:[],qIdx:0,qScore:0,qWrong:[],qAnswered:false,qTmrInt:null,qTLeft:30,gTab:'elig',listening:false};
 
-// ── CURSOR ──
+// ── ENHANCED NEXT-LEVEL CURSOR WITH PARTICLE TRAIL ──
 const cursor=document.getElementById('cursor'),cRing=document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
-(function animR(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;cRing.style.left=rx+'px';cRing.style.top=ry+'px';requestAnimationFrame(animR);})();
+let mx=0,my=0,rx=0,ry=0,lmx=0,lmy=0,trails=[];
+document.addEventListener('mousemove',e=>{
+  mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';
+  if(Math.hypot(mx-lmx,my-lmy)>6){
+    const t=document.createElement('div');t.id='cursor-trail';
+    t.style.left=mx+'px';t.style.top=my+'px';t.style.transform='translate(-50%,-50%)';
+    document.body.appendChild(t);trails.push({el:t,age:0,maxAge:40});lmx=mx;lmy=my;
+  }
+});
+(function animR(){
+  rx+=(mx-rx)*.18;ry+=(my-ry)*.18;cRing.style.left=rx+'px';cRing.style.top=ry+'px';
+  trails=trails.filter(t=>{
+    t.age++;const a=1-(t.age/t.maxAge);
+    t.el.style.opacity=a;t.el.style.transform=`translate(-50%,-50%) scale(${1-a*.5})`;
+    if(t.age>t.maxAge){t.el.remove();return false;}return true;
+  });
+  requestAnimationFrame(animR);
+})();
 
 // ── CANVAS PARTICLE BG ──
 (function(){
@@ -1637,6 +1785,29 @@ function swLang(){
     const el=document.getElementById(id);if(el)el.textContent=t[S.lang]||t.en;
   });
   bldTL();bldG(S.gTab);
+}
+
+// ── SETTINGS PANEL ──
+function openSettings(){document.getElementById('settingsModal').classList.remove('hidden');document.getElementById('geminiKeyInput').value=localStorage.getItem('vaakdoot_gemini_key')||'';document.getElementById('mapsKeyInput').value=localStorage.getItem('vaakdoot_maps_key')||'';document.getElementById('settingsError').style.display='none';}
+function closeSettings(){document.getElementById('settingsModal').classList.add('hidden');}
+function toggleKeyVisibility(){const inp=document.getElementById('geminiKeyInput');const btn=event.target;inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁️ Show':'👁️ Hide';}
+function toggleMapsVisibility(){const inp=document.getElementById('mapsKeyInput');const btn=event.target;inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁️ Show':'👁️ Hide';}
+async function testAndSaveKeys(){
+  const gkey=document.getElementById('geminiKeyInput').value.trim();
+  const mkey=document.getElementById('mapsKeyInput').value.trim();
+  const errBox=document.getElementById('settingsError');
+  errBox.style.display='none';
+  if(!gkey){errBox.textContent='⚠️ Gemini API key is required';errBox.style.display='block';return;}
+  try{
+    errBox.textContent='🧪 Testing Gemini API...';errBox.style.display='block';errBox.style.color='#00ff88';
+    const testUrl=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gkey}`;
+    const r=await fetch(testUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'test'}]}]})});
+    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+    GK=gkey;GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
+    localStorage.setItem('vaakdoot_gemini_key',gkey);
+    if(mkey)localStorage.setItem('vaakdoot_maps_key',mkey);
+    errBox.textContent='✅ Keys saved successfully! Try the AI Assistant now.';errBox.style.color='#00ff88';setTimeout(closeSettings,1500);
+  }catch(err){errBox.textContent=`❌ Error: ${err.message}`;errBox.style.color='#ff6b6b';errBox.style.display='block';}
 }
 
 // ── TIMELINE DATA ──
@@ -1921,7 +2092,12 @@ async function callGemini(txt){
       generationConfig:{temperature:.7,maxOutputTokens:1024,topP:.9}
     })
   });
-  if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+  if(!r.ok){
+    const e=await r.json().catch(()=>({}));
+    const errMsg=e.error?.message||e.message||`HTTP ${r.status}`;
+    const fullErr=`${errMsg}\n\n💡 DEBUG: Verify Gemini API in Google Cloud:\n✓ Enable "Generative Language API"\n✓ Setup billing (free tier has limits)\n✓ Create API key with permissions`;
+    throw new Error(fullErr);
+  }
   const d=await r.json();
   const rep=d.candidates?.[0]?.content?.parts?.[0]?.text||'Sorry, I could not generate a response.';
   S.hist.push({role:'model',parts:[{text:rep}]});
