@@ -1154,22 +1154,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
       <p>Add your Gemini API key to enable AI Assistant features:</p>
       <div class="form-group">
         <label for="geminiKeyInput">Gemini API Key:</label>
-        <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." maxlength="100" />
+        <input type="password" id="geminiKeyInput" placeholder="AIzaSy..." maxlength="200" />
         <button class="btn-secondary" onclick="toggleKeyVisibility()">👁️ Show</button>
       </div>
-      <div class="form-group">
-        <label for="mapsKeyInput">Google Maps API Key (Optional):</label>
-        <input type="password" id="mapsKeyInput" placeholder="AIzaSy..." maxlength="100" />
-        <button class="btn-secondary" onclick="toggleMapsVisibility()">👁️ Show</button>
-      </div>
       <div class="info-box">
-        <strong>📚 How to get keys:</strong>
+        <strong>📚 How to get Gemini API Key:</strong>
         <ol>
-          <li>Visit <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
-          <li>Enable "Generative Language API" (for Gemini)</li>
-          <li>Go to Credentials → Create API Key</li>
-          <li>Enable billing (free tier has 15 requests/min limit)</li>
-          <li>Copy & paste your key above</li>
+          <li>Go to <a href="https://console.cloud.google.com" target="_blank">Google Cloud Console</a></li>
+          <li>Create new project or select existing</li>
+          <li>Search for "Generative Language API" and click <strong>ENABLE</strong></li>
+          <li>Go to <strong>APIs & Services</strong> → <strong>Credentials</strong></li>
+          <li>Click <strong>+ Create Credentials</strong> → <strong>API Key</strong></li>
+          <li>Copy the key and paste above</li>
+          <li>⚠️ Link a billing account (free tier has limits)</li>
         </ol>
       </div>
       <div class="error-box" id="settingsError" style="display:none;"></div>
@@ -1788,26 +1785,38 @@ function swLang(){
 }
 
 // ── SETTINGS PANEL ──
-function openSettings(){document.getElementById('settingsModal').classList.remove('hidden');document.getElementById('geminiKeyInput').value=localStorage.getItem('vaakdoot_gemini_key')||'';document.getElementById('mapsKeyInput').value=localStorage.getItem('vaakdoot_maps_key')||'';document.getElementById('settingsError').style.display='none';}
+function openSettings(){document.getElementById('settingsModal').classList.remove('hidden');document.getElementById('geminiKeyInput').value=localStorage.getItem('vaakdoot_gemini_key')||'';document.getElementById('settingsError').style.display='none';}
 function closeSettings(){document.getElementById('settingsModal').classList.add('hidden');}
 function toggleKeyVisibility(){const inp=document.getElementById('geminiKeyInput');const btn=event.target;inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁️ Show':'👁️ Hide';}
-function toggleMapsVisibility(){const inp=document.getElementById('mapsKeyInput');const btn=event.target;inp.type=inp.type==='password'?'text':'password';btn.textContent=inp.type==='password'?'👁️ Show':'👁️ Hide';}
 async function testAndSaveKeys(){
   const gkey=document.getElementById('geminiKeyInput').value.trim();
-  const mkey=document.getElementById('mapsKeyInput').value.trim();
   const errBox=document.getElementById('settingsError');
   errBox.style.display='none';
+  errBox.style.color='#ff6b6b';
   if(!gkey){errBox.textContent='⚠️ Gemini API key is required';errBox.style.display='block';return;}
+  if(!gkey.startsWith('AIzaSy')){errBox.textContent='❌ Invalid format. API key should start with "AIzaSy"';errBox.style.display='block';return;}
   try{
-    errBox.textContent='🧪 Testing Gemini API...';errBox.style.display='block';errBox.style.color='#00ff88';
+    errBox.textContent='🧪 Testing Gemini API key...';errBox.style.color='#00ff88';errBox.style.display='block';
     const testUrl=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${gkey}`;
-    const r=await fetch(testUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'test'}]}]})});
-    if(!r.ok){const e=await r.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${r.status}`);}
+    const r=await fetch(testUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({contents:[{parts:[{text:'hello'}]}],generationConfig:{maxOutputTokens:10}})});
+    const data=await r.json();
+    if(!r.ok){
+      if(data.error){
+        const msg=data.error.message||data.error.status||'Unknown error';
+        throw new Error(`${msg}\n\n✅ Fix: Go to Google Cloud Console → Enable "Generative Language API" → Link billing account`);
+      }
+      throw new Error(`HTTP ${r.status}`);
+    }
+    if(!data.candidates||!data.candidates[0]){throw new Error('Invalid API response - check key permissions');}
     GK=gkey;GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
     localStorage.setItem('vaakdoot_gemini_key',gkey);
-    if(mkey)localStorage.setItem('vaakdoot_maps_key',mkey);
-    errBox.textContent='✅ Keys saved successfully! Try the AI Assistant now.';errBox.style.color='#00ff88';setTimeout(closeSettings,1500);
-  }catch(err){errBox.textContent=`❌ Error: ${err.message}`;errBox.style.color='#ff6b6b';errBox.style.display='block';}
+    errBox.textContent='✅ API key saved successfully! Try the AI Assistant now.';errBox.style.color='#00ff88';
+    setTimeout(closeSettings,1500);
+  }catch(err){
+    errBox.style.color='#ff6b6b';
+    errBox.textContent=`❌ ${err.message}`;
+    errBox.style.display='block';
+  }
 }
 
 // ── TIMELINE DATA ──
