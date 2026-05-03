@@ -1481,6 +1481,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 window.initMap=function(){
   const el=document.getElementById('gmap');
   if(!el)return;
+  el.innerHTML='';
   const m=new google.maps.Map(el,{
     center:{lat:20.5937,lng:78.9629},zoom:5,
     styles:[
@@ -1492,6 +1493,7 @@ window.initMap=function(){
     ]
   });
   window.GM=m;
+  window.OSM_MODE=false;
   document.getElementById('mph').style.display='none';
 };
 </script>
@@ -1503,7 +1505,7 @@ window.initMap=function(){
 'use strict';
 
 // ── CONFIG ──
-const GK='AIzaSyAiPrNp_Wvwj4ER2gBQVQAUjiNsSIM48VI';
+const GK='AIzaSyBBL6dsUOGYOlJ6UrO8ZEm1DXj9yigljZA';
 const GM_URL=`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`;
 
 // ── STATE ──
@@ -1971,6 +1973,23 @@ function togV(){
 // ── BOOTH FINDER ──
 const MAP_KEY_STORE='vaakdoot_maps_key';
 
+function osmBox(lat,lng,delta=0.2){
+  return `${lng-delta}%2C${lat-delta}%2C${lng+delta}%2C${lat+delta}`;
+}
+
+function initOsmMap(lat,lng,label='Selected Location'){
+  const g=document.getElementById('gmap');
+  if(!g)return;
+  const bbox=osmBox(lat,lng,.15);
+  g.innerHTML=`<iframe title="OpenStreetMap" style="width:100%;height:100%;border:0;" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${lat}%2C${lng}"></iframe>`;
+  window.OSM_MODE=true;
+  document.getElementById('mph').style.display='none';
+  const info=document.getElementById('bInfo');
+  if(info){
+    info.innerHTML=`<h3>📍 ${label}</h3><p style="margin:12px 0;color:var(--text2)">Map loaded in fallback mode (OpenStreetMap). For advanced nearby booth markers, add Google Maps key above.</p><div class="tip-box">💡 You can still verify your exact booth via <a href="https://voters.eci.gov.in/booth-search" target="_blank" style="color:var(--saffron)">ECI Booth Search</a>.</div>`;
+  }
+}
+
 function getMapsKey(){
   try{return localStorage.getItem(MAP_KEY_STORE)||'';}catch{return '';}
 }
@@ -1985,7 +2004,7 @@ function setMapPlaceholder(msg){
 
 function loadGoogleMapsApi(key){
   if(!key){
-    setMapPlaceholder('Add your Google Maps API key and click Save Map Key to enable map search.');
+    initOsmMap(20.5937,78.9629,'India');
     return;
   }
   if(window.google&&window.google.maps){
@@ -1999,7 +2018,10 @@ function loadGoogleMapsApi(key){
   s.async=true;
   s.defer=true;
   s.src=`https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(key)}&libraries=places&callback=initMap`;
-  s.onerror=()=>setMapPlaceholder('Map could not load. Check API key, billing, and Places API in Google Cloud console.');
+  s.onerror=()=>{
+    setMapPlaceholder('Google Maps could not load. Showing OpenStreetMap fallback.');
+    initOsmMap(20.5937,78.9629,'India');
+  };
   document.head.appendChild(s);
 }
 
@@ -2015,6 +2037,18 @@ function saveMapsKey(){
 function srchBooth(){
   const loc=document.getElementById('locIn').value.trim();
   if(!loc){alert('Please enter a location.');return;}
+  if(window.OSM_MODE){
+    fetch(`https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(loc+', India')}`)
+      .then(r=>r.json())
+      .then(data=>{
+        if(data&&data.length){
+          const lat=Number(data[0].lat),lng=Number(data[0].lon);
+          initOsmMap(lat,lng,data[0].display_name||loc);
+        }else alert('Location not found. Try a more specific area.');
+      })
+      .catch(()=>alert('Location search failed. Please try again.'));
+    return;
+  }
   if(window.GM&&window.google){
     const gc=new google.maps.Geocoder();
     gc.geocode({address:loc+', India'},(results,status)=>{
@@ -2048,7 +2082,8 @@ function srchBooth(){
       }else alert('Location not found. Try a more specific area.');
     });
   }else{
-    setMapPlaceholder('Map is not active yet. Save Google Maps key first, then search again.');
+    setMapPlaceholder('Google Maps not active. Using OpenStreetMap fallback.');
+    initOsmMap(20.5937,78.9629,'India');
     document.getElementById('bInfo').innerHTML=`<h3>📍 ${loc}</h3><p style="margin:12px 0;color:var(--text2)">To find your exact polling booth:</p><ol><li>Save Maps API key using the field above</li><li>Or visit <a href="https://voters.eci.gov.in/booth-search" target="_blank" style="color:var(--saffron)">voters.eci.gov.in/booth-search</a></li><li>Enter your EPIC card number</li><li>Your booth details will be shown</li></ol><a href="https://voters.eci.gov.in" target="_blank" class="btn-glow primary" style="display:inline-flex;margin-top:16px;text-decoration:none;padding:12px 24px;">🔍 Open ECI Portal →</a>`;
   }
 }
@@ -2056,6 +2091,10 @@ function myLoc(){
   if(!navigator.geolocation){alert('Geolocation not supported.');return;}
   navigator.geolocation.getCurrentPosition(pos=>{
     const{latitude:lat,longitude:lng}=pos.coords;
+    if(window.OSM_MODE){
+      initOsmMap(lat,lng,'Your Location');
+      return;
+    }
     if(window.GM&&window.google){
       const ll=new google.maps.LatLng(lat,lng);
       window.GM.setCenter(ll);window.GM.setZoom(13);
