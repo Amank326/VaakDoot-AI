@@ -1,0 +1,11 @@
+vaakdoot-ai-final.zip
+vaakdoot-ai-final/
+server.py
+START_SERVER.bat
+DEPLOY.bat
+*.pyc
+__pycache__/
+.DS_Store
+Thumbs.db
+.firebase/
+.firebaserc
