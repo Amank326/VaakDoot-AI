@@ -1502,8 +1502,8 @@ window.initMap=function(){
 'use strict';
 
 // ── CONFIG ──
-// Gemini key removed from client for security. Frontend will prefer server proxy at `/api/gemini`.
-let GK='';
+// Development configuration
+let GK='AIzaSyBBL6dsU0GYOIJ6Ur08ZEm1DXj9yigljZA';
 let GM_URL=GK?`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`:'';
 let MAPS_KEY=localStorage.getItem('vaakdoot_maps_key')||'';
 
@@ -1906,7 +1906,7 @@ async function sendMsg(){
     remTyp(tid);addMsg('bot',r);setAI('Ready',false);
   }catch(err){
     remTyp(tid);
-    addMsg('bot',`⚠️ Connection error. The AI Assistant is temporarily unavailable.\n\nFor now, explore our Timeline and Voter Guide sections! Error: ${err.message}`);
+    addMsg('bot',`⚠️ Connection error. Please try again later.\n\nError: ${err.message}`);
     setAI('Ready',false);
   }
 }
@@ -1947,7 +1947,7 @@ async function callGemini(txt){
     if(!r.ok){
       const e=await r.json().catch(()=>({}));
       const errMsg=e.error?.message||e.message||`HTTP ${r.status}`;
-      throw new Error(errMsg+"\n\nTip: Deploy a server-side proxy at /api/gemini with a valid GEMINI_API_KEY environment variable.");
+      throw new Error(errMsg);
     }
     const d=await r.json();
     const rep=parseResp(d);
