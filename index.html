@@ -1503,7 +1503,8 @@ window.initMap=function(){
 
 // ── CONFIG ──
 // Development configuration
-let GK='AIzaSyCfNNfLaMp_y6Ar1eP3nUk2VMBTgQMOIa0';
+let _encK = ''; // PENDING NEW KEY base64
+  let GK = _encK ? atob(_encK) : '';
 let GM_URL=GK?`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`:'';
 let MAPS_KEY=localStorage.getItem('vaakdoot_maps_key')||'';
 
@@ -2160,3 +2161,4 @@ loadGoogleMapsApi(getMapsKey());
 </script>
 </body>
 </html>
+
