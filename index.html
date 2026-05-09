@@ -35,7 +35,7 @@ body{
   background:var(--bg0);
   color:var(--text1);
   overflow-x:hidden;
-  cursor:none;
+  
 }
 ::selection{background:var(--saffron);color:#000}
 
@@ -105,7 +105,7 @@ body::before{
 }
 .nav-logo{
   display:flex;align-items:center;gap:10px;
-  text-decoration:none;cursor:none;flex-shrink:0;
+  text-decoration:none;flex-shrink:0;
 }
 .logo-3d{
   width:36px;height:36px;position:relative;
@@ -127,7 +127,7 @@ body::before{
   display:flex;gap:4px;list-style:none;flex:1;justify-content:center;
 }
 .nav-links button{
-  background:none;border:none;cursor:none;
+  background:none;border:none;
   color:var(--text2);font-family:var(--outfit);
   font-size:13px;font-weight:500;
   padding:8px 14px;border-radius:var(--r8);
@@ -152,7 +152,7 @@ body::before{
   background:var(--glass);
   border:1px solid var(--glass-border);
   border-radius:100px;
-  padding:7px 16px;cursor:none;
+  padding:7px 16px;
   font-family:var(--outfit);font-size:12px;font-weight:600;
   color:var(--text2);transition:all .25s;letter-spacing:.5px;
 }
@@ -163,7 +163,7 @@ body::before{
 }
 .hamburger{
   display:none;background:none;border:none;
-  color:var(--text1);font-size:22px;cursor:none;
+  color:var(--text1);font-size:22px;
 }
 
 /* ── SECTIONS ── */
@@ -240,7 +240,7 @@ body::before{
   display:inline-flex;align-items:center;gap:10px;
   padding:14px 32px;border-radius:var(--r16);
   font-family:var(--outfit);font-size:15px;font-weight:700;
-  cursor:none;border:none;transition:all .3s var(--ease-spring);
+  border:none;transition:all .3s var(--ease-spring);
   position:relative;overflow:hidden;letter-spacing:.3px;
 }
 .btn-glow::before{
@@ -324,7 +324,7 @@ body::before{
   display:flex;align-items:center;gap:12px;
   padding:10px 12px;border-radius:var(--r8);
   margin-bottom:8px;font-size:13px;
-  color:var(--text2);transition:all .3s;cursor:none;
+  color:var(--text2);transition:all .3s;
 }
 .ballot-opt.sel{
   background:rgba(255,107,0,.1);
@@ -418,7 +418,7 @@ body::before{
   border:1px solid var(--glass-border);
   border-radius:var(--r24);
   padding:32px;
-  cursor:none;
+  
   position:relative;overflow:hidden;
   transition:all .4s var(--ease-spring);
   transform-style:preserve-3d;
@@ -484,7 +484,7 @@ body::before{
 .fdot{
   width:8px;height:8px;border-radius:50%;
   background:rgba(255,255,255,.15);
-  border:none;cursor:none;transition:all .3s;
+  border:none;transition:all .3s;
 }
 .fdot.on{
   background:var(--saffron);
@@ -535,7 +535,7 @@ body::before{
 .qchip{
   background:var(--glass);border:1px solid var(--glass-border);
   border-radius:100px;padding:8px 16px;
-  font-size:12px;cursor:none;font-family:var(--outfit);
+  font-size:12px;font-family:var(--outfit);
   color:var(--text2);transition:all .25s;letter-spacing:.2px;
 }
 .qchip:hover{
@@ -613,7 +613,7 @@ body::before{
 }
 .v-btn{
   background:none;border:none;font-size:20px;
-  cursor:none;padding:4px;border-radius:var(--r8);
+  padding:4px;border-radius:var(--r8);
   transition:all .2s;flex-shrink:0;
 }
 .v-btn:hover{background:rgba(255,107,0,.15);}
@@ -626,7 +626,7 @@ body::before{
 }
 #chatIn::placeholder{color:var(--text3);}
 .send-btn-3d{
-  width:42px;height:42px;border-radius:50%;border:none;cursor:none;
+  width:42px;height:42px;border-radius:50%;border:none;
   background:linear-gradient(135deg,var(--saffron),#FF4500);
   display:flex;align-items:center;justify-content:center;
   flex-shrink:0;transition:all .3s var(--ease-spring);
@@ -670,7 +670,7 @@ body::before{
   border-radius:var(--r16);
   padding:24px;
   transition:all .4s var(--ease-spring);
-  cursor:none;
+  
 }
 .tl-card:hover{
   background:var(--glass2);
@@ -717,7 +717,7 @@ body::before{
   background:var(--glass);
   border:1px solid var(--glass-border);
   border-radius:100px;padding:10px 24px;
-  cursor:none;font-family:var(--outfit);
+  font-family:var(--outfit);
   font-size:13px;font-weight:600;
   color:var(--text2);transition:all .3s;
   letter-spacing:.3px;
@@ -734,7 +734,7 @@ body::before{
 .g-card{
   background:var(--glass);border:1px solid var(--glass-border);
   border-radius:var(--r16);padding:24px;
-  transition:all .3s var(--ease-spring);cursor:none;
+  transition:all .3s var(--ease-spring);
 }
 .g-card:hover{
   border-color:rgba(255,107,0,.3);
@@ -749,7 +749,7 @@ body::before{
   display:flex;gap:16px;padding:16px;
   background:var(--glass);border:1px solid var(--glass-border);
   border-radius:var(--r16);margin-bottom:10px;
-  transition:all .3s;cursor:none;
+  transition:all .3s;
 }
 .step-row:hover{border-color:rgba(255,107,0,.3);transform:translateX(4px);}
 .step-badge{
@@ -822,7 +822,7 @@ body::before{
 .diff-btns{display:flex;gap:8px;justify-content:center;}
 .dbtn{
   background:var(--glass);border:1px solid var(--glass-border);
-  border-radius:100px;padding:10px 24px;cursor:none;
+  border-radius:100px;padding:10px 24px;
   font-family:var(--outfit);font-size:13px;font-weight:600;
   color:var(--text2);transition:all .3s;
 }
@@ -865,7 +865,7 @@ body::before{
   background:rgba(255,255,255,.03);
   border:1px solid var(--glass-border);
   border-radius:var(--r16);padding:14px 16px;
-  cursor:none;font-family:var(--outfit);font-size:14px;
+  font-family:var(--outfit);font-size:14px;
   color:var(--text2);text-align:left;transition:all .25s;line-height:1.4;
 }
 .opt:hover:not(:disabled){
@@ -938,7 +938,7 @@ body::before{
 .search-bar button{
   background:linear-gradient(135deg,var(--saffron),#FF4500);
   color:#fff;border:none;border-radius:var(--r16);
-  padding:14px 28px;cursor:none;font-family:var(--outfit);
+  padding:14px 28px;font-family:var(--outfit);
   font-size:15px;font-weight:700;transition:all .3s;
   box-shadow:0 4px 16px var(--saffron-glow);
 }
@@ -951,7 +951,7 @@ body::before{
   background:var(--glass);border:1px solid var(--glass-border);
   border-radius:var(--r16);padding:10px 16px;
   font-family:var(--outfit);font-size:14px;color:var(--text1);
-  cursor:none;outline:none;
+  outline:none;
 }
 #stSel option{background:var(--bg2);}
 .map-box{
@@ -990,7 +990,7 @@ body::before{
   border:1px solid var(--glass-border);
   border-radius:var(--r8);padding:10px 14px;
   text-decoration:none;font-size:13px;font-weight:500;
-  color:var(--text2);margin-bottom:8px;transition:all .3s;cursor:none;
+  color:var(--text2);margin-bottom:8px;transition:all .3s;
 }
 .eci-lnk:hover{
   background:rgba(255,107,0,.1);
@@ -1054,7 +1054,7 @@ footer::before{
 .mob-menu button{
   background:none;border:none;text-align:left;
   padding:14px 20px;border-radius:var(--r8);
-  font-size:15px;cursor:none;color:var(--text2);
+  font-size:15px;color:var(--text2);
   font-family:var(--outfit);transition:all .2s;
 }
 .mob-menu button:hover{
@@ -1111,11 +1111,6 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 </style>
 </head>
 <body>
-
-<!-- CURSOR -->
-<div id="cursor"></div>
-<div id="cursor-ring"></div>
-
 
 <!-- BG CANVAS -->
 <canvas id="bgCanvas"></canvas>
@@ -1510,12 +1505,6 @@ let MAPS_KEY=localStorage.getItem('vaakdoot_maps_key')||'';
 
 // ── STATE ──
 const S={lang:'en',hist:[],cFact:0,fInt:null,qDiff:'easy',qQs:[],qIdx:0,qScore:0,qWrong:[],qAnswered:false,qTmrInt:null,qTLeft:30,gTab:'elig',listening:false};
-
-// ── CURSOR ──
-const cursor=document.getElementById('cursor'),cRing=document.getElementById('cursor-ring');
-let mx=0,my=0,rx=0,ry=0;
-document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cursor.style.left=mx+'px';cursor.style.top=my+'px';});
-(function animR(){rx+=(mx-rx)*.15;ry+=(my-ry)*.15;cRing.style.left=rx+'px';cRing.style.top=ry+'px';requestAnimationFrame(animR);})();
 
 // ── CANVAS PARTICLE BG ──
 (function(){
@@ -2161,5 +2150,9 @@ loadGoogleMapsApi(getMapsKey());
 </script>
 </body>
 </html>
+
+
+
+
 
 
