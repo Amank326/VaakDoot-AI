@@ -1500,7 +1500,7 @@ window.initMap=function(){
 // Development configuration
 let _encK = 'QUl6YVN5RDRKTFJMb3hxbno1Qnp6SUVWN08xTTRLMlNka18xUVdZ'; // Protected Base64
   let GK = _encK ? atob(_encK) : '';
-let GM_URL=GK?`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GK}`:'';
+let GM_URL=GK?`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GK}`:'';
 let MAPS_KEY=localStorage.getItem('vaakdoot_maps_key')||'';
 
 // ── STATE ──
@@ -2150,6 +2150,7 @@ loadGoogleMapsApi(getMapsKey());
 </script>
 </body>
 </html>
+
 
 
 
